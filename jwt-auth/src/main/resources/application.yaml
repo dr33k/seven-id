@@ -8,10 +8,10 @@ spring:
     schemas: [public]
 
   datasource:
-    username: ${PG_USER}
-    password: ${PG_PASSWORD}
+    username: ${PG_USER:postgres}
+    password: ${PG_PASSWORD:root}
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:${PG_PORT}/auth_db
+    url: jdbc:postgresql://localhost:${PG_PORT:5432}/auth_db
     hikari:
       auto-commit: false
 springdoc:
@@ -19,4 +19,4 @@ springdoc:
     path: /swagger
 authentication:
   jwt:
-    signing-key: ${JWT_SIGNING_KEY}
+    signing-key: ${JWT_SIGNING_KEY:weak_jwt_signing_key00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000}
