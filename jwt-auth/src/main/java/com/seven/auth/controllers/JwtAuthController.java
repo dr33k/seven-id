@@ -1,5 +1,6 @@
-package com.seven.auth;
+package com.seven.auth.controllers;
 
+import com.seven.auth.JwtService;
 import com.seven.auth.account.AccountDTO;
 import com.seven.auth.account.AuthDTO;
 import com.seven.auth.dto.jwt.JwtLoginRequest;

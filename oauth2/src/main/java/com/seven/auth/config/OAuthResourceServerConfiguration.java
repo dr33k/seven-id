@@ -4,7 +4,6 @@ package com.seven.auth.config;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -42,7 +41,6 @@ public class OAuthResourceServerConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
                                 .requestMatchers(HttpMethod.POST, "/auth/**", "/su/auth/*/*/login**").permitAll()
@@ -50,8 +48,7 @@ public class OAuthResourceServerConfiguration {
                                 .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer((oauth2) -> oauth2
-                        .authenticationManagerResolver(
-                                this.tokenAuthenticationManagerResolver()));
+                        .authenticationManagerResolver(this.tokenAuthenticationManagerResolver()));
         return http.build();
     }
 
@@ -62,18 +59,19 @@ public class OAuthResourceServerConfiguration {
 
         Map<String, AuthenticationManager> otMap = getOpaqueTokenAuthManagerMap();
 
-        return (request) -> useOpaque(request) ? resolveOpaqueToken(request, otMap) : jwt.resolve(request);
-    }
-
-    private boolean useOpaque(HttpServletRequest request) {
-        return request.getRequestURI().startsWith("/auth/oauth2/opaque/");
+        return (request) -> {
+            String uri = request.getRequestURI();
+            if (uri.startsWith("/auth/oauth2/jwt")) return jwt.resolve(request);
+            else if (uri.startsWith("/auth/oauth2/opaque")) return resolveOpaqueToken(request, otMap);
+            else throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        };
     }
 
     private AuthenticationManager resolveOpaqueToken(HttpServletRequest request, Map<String, AuthenticationManager> otMap) throws ResponseStatusException {
         try {
             String introspectionServerName = request.getRequestURI().substring(1).split("/")[3];
             return otMap.get(introspectionServerName);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error("Error resolving opaque token: ", e);
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }

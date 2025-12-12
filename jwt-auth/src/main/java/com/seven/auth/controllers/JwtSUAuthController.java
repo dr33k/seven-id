@@ -1,5 +1,6 @@
-package com.seven.auth;
+package com.seven.auth.controllers;
 
+import com.seven.auth.JwtService;
 import com.seven.auth.account.AccountDTO;
 import com.seven.auth.account.AuthDTO;
 import com.seven.auth.dto.jwt.JwtLoginRequest;
@@ -7,8 +8,6 @@ import com.seven.auth.dto.response.Response;
 import com.seven.auth.exception.AuthorizationException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
