@@ -1,4 +1,4 @@
-﻿# Authentication Service
+﻿# SEVEN ID
 Schema-per-tenant modular-monolithic authentication solution. 
 
 Plug-and-play adapters for microservices. 
