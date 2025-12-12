@@ -1,21 +1,35 @@
 server:
-  port: 8081
+  port: 8082
 spring:
   application:
-    name: 'oauth2-resource'
+    name: 'oauth2-resource-client-hybrid'
   security:
     oauth2:
       resourceserver:
         jwt:
           trusted-issuers:
-            - ${OAUTH2_JWT_GOOGLE_ISSUER:blank}
-            - ${OAUTH2_JWT_APPLE_ISSUER:blank}
+            - 'https://accounts.google.com'
+            - 'https://appleid.apple.com'
         opaquetoken:
           servers:
             - introspection-uri: ${OAUTH2_S1_OT_INTROSPECTION_URI:blank}
               client-id: ${OAUTH2_S1_OT_CLIENT_ID:blank}
               client-secret: ${OAUTH2_S1_OT_CLIENT_SECRET:blank}
               name: ${OAUTH2_S1_OT_NAME:blank}
+      client:
+        registration:
+          google:
+            provider: google
+            client-id: ${OIDC_GOOGLE_CLIENT_ID:blank}
+            client-secret: ${OIDC_GOOGLE_CLIENT_SECRET:blank}
+            authorization-grant-type: authorization_code
+            scope: openid,profile,email
+        provider:
+          google:
+            issuer-uri: 'https://accounts.google.com'
+  #          apple:
+  #            client-id: google-client-id
+  #            client-secret: google-client-secret
 
   flyway:
     enabled: true

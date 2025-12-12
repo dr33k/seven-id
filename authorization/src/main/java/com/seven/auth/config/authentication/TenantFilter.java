@@ -44,6 +44,7 @@ public class TenantFilter extends OncePerRequestFilter {
     private void setTenant(HttpServletRequest request, String tenant) {
         try {
             String path = request.getRequestURI();
+            log.info("PATH: {}", path);
             //Paths not visited by users
             if (isPathWhitelisted(path)) {
                 log.info("WHITELISTED: {}", path);

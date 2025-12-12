@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationManagerResolver;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -48,8 +49,12 @@ public class OAuthResourceServerConfiguration {
                                 .requestMatchers("/swagger", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                                 .anyRequest().authenticated()
                 )
+
                 .oauth2ResourceServer((oauth2) -> oauth2
-                        .authenticationManagerResolver(this.tokenAuthenticationManagerResolver()));
+                        .authenticationManagerResolver(this.tokenAuthenticationManagerResolver()))
+
+                .oauth2Login(Customizer.withDefaults())
+        ;
         return http.build();
     }
 
@@ -62,8 +67,8 @@ public class OAuthResourceServerConfiguration {
 
         return (request) -> {
             String uri = request.getRequestURI();
-            if (uri.startsWith("/auth/oauth2-resource/jwt")) return jwt.resolve(request);
-            else if (uri.startsWith("/auth/oauth2-resource/opaque")) return resolveOpaqueToken(request, otMap);
+            if (uri.startsWith("/auth/oauth2-resource-client-hybrid/jwt")) return jwt.resolve(request);
+            else if (uri.startsWith("/auth/oauth2-resource-client-hybrid/opaque")) return resolveOpaqueToken(request, otMap);
             else throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         };
     }

@@ -13,9 +13,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -25,7 +23,7 @@ public class AuthorizationHandlerInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws AuthorizationException{
         try {
-            List<String> tokenPermissions = ((List<String>) request.getAttribute("permissions"));
+            List<String> tokenPermissions = Optional.ofNullable((List<String>)request.getAttribute("permissions")).orElse(Collections.EMPTY_LIST);
             log.info("User permissions: {}", tokenPermissions);
 
             if (handler instanceof HandlerMethod) {

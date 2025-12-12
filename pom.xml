@@ -19,8 +19,7 @@
         <module>authorization</module>
         <module>jwt-auth</module>
         <module>jwt-auth-adapter</module>
-        <module>oauth2-resource</module>
-        <module>oauth2-client</module>
+        <module>oauth2-resource-client-hybrid</module>
     </modules>
 
     <properties>
