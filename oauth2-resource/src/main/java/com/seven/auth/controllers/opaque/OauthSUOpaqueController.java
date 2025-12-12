@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("su/auth/oauth2/opaque")
+@RequestMapping("su/auth/oauth2-resource/opaque")
 public class OauthSUOpaqueController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 

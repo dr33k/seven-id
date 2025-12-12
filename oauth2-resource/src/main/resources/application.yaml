@@ -2,7 +2,7 @@ server:
   port: 8081
 spring:
   application:
-    name: 'oauth2'
+    name: 'oauth2-resource'
   security:
     oauth2:
       resourceserver:

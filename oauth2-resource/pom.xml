@@ -9,7 +9,7 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>oauth2</artifactId>
+    <artifactId>oauth2-resource</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

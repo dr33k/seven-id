@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @Configuration
-@ConfigurationProperties(prefix = "spring.security.oauth2.resourceserver.opaquetoken")
+@ConfigurationProperties(prefix = "spring.security.oauth2-resource.resourceserver.opaquetoken")
 public class IntrospectionServerList {
     private List<IntrospectionServer> servers;
     public IntrospectionServerList() {

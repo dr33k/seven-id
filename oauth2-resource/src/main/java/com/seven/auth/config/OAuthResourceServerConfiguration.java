@@ -62,8 +62,8 @@ public class OAuthResourceServerConfiguration {
 
         return (request) -> {
             String uri = request.getRequestURI();
-            if (uri.startsWith("/auth/oauth2/jwt")) return jwt.resolve(request);
-            else if (uri.startsWith("/auth/oauth2/opaque")) return resolveOpaqueToken(request, otMap);
+            if (uri.startsWith("/auth/oauth2-resource/jwt")) return jwt.resolve(request);
+            else if (uri.startsWith("/auth/oauth2-resource/opaque")) return resolveOpaqueToken(request, otMap);
             else throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         };
     }

@@ -1,11 +1,9 @@
-package com.seven.auth.controllers.jwt;
+package com.seven.auth.controllers.opaque;
 
 import com.seven.auth.account.AccountDTO;
 import com.seven.auth.dto.jwt.JwtLoginRequest;
 import com.seven.auth.dto.response.Response;
 import com.seven.auth.exception.AuthorizationException;
-import com.seven.auth.services.jwt.AppleOauth2Service;
-import com.seven.auth.services.jwt.GoogleOauth2Service;
 import com.seven.auth.util.Constants;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -17,17 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth/oauth2/jwt")
+@RequestMapping("/auth/oauth2-resource/opaque")
 @SecurityRequirements
-public class OauthJwtController {
-    private final GoogleOauth2Service googleOauth2Service;
-    private final AppleOauth2Service appleOauth2Service;
-
+public class OauthOpaqueController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public OauthJwtController(GoogleOauth2Service googleOauth2Service, AppleOauth2Service appleOauth2Service) {
-        this.googleOauth2Service = googleOauth2Service;
-        this.appleOauth2Service = appleOauth2Service;
+    public OauthOpaqueController() {
     }
 
     @PostMapping(value = "/{provider}/register", produces = "application/json", consumes = "application/json")
@@ -35,10 +28,7 @@ public class OauthJwtController {
     public ResponseEntity<Response> createResource(
             @PathVariable("provider") String provider,
             @Valid @RequestBody AccountDTO.Create request) throws AuthorizationException {
-        log.info("OAuth2 JWT variant provider {}", provider);
-
-//            AuthDTO userDTO = oauth2Service.register(request);
-//            return created(userDTO.data, userDTO.token, "/domains" );
+        log.info("OAuth2 Opaque variant provider {}", provider);
         return null;
     }
 
@@ -47,10 +37,7 @@ public class OauthJwtController {
     public ResponseEntity<Response> login(
             @PathVariable("provider") String provider,
             @Valid @RequestBody JwtLoginRequest request) throws AuthorizationException {
-        log.info("OAuth2 JWT variant provider {}", provider);
-
-        //        AuthDTO userDTO = oauth2Service.login(request);
-//        return ok(userDTO.data, userDTO.token);
+        log.info("OAuth2 Opaque variant provider {}", provider);
         return null;
     }
 }

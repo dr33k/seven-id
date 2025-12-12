@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("su/auth/oauth2/jwt")
+@RequestMapping("su/auth/oauth2-resource/jwt")
 public class OauthSUJwtController {
     private final GoogleOauth2Service googleOauth2Service;
     private final AppleOauth2Service appleOauth2Service;
