@@ -3,9 +3,7 @@ Schema-per-tenant modular-monolithic authentication solution.
 
 Plug-and-play adapters for microservices. 
 
-Supports JWT, OAuth2 and Kerberos. 
-
-OAuth2 implementation currently in progress.
+Supports self-signed JWTs, OAuth2 OIDC and OAuth2 Opaque Tokens. 
 
 ## Requirements
 
@@ -34,4 +32,6 @@ OR for truly native pseudo-random number generation by BCryptPasswordEncoder on 
     $ mvn clean install
     $ java -Djava.security.egd=file:///dev/random -jar jwt-auth/target/jwt-auth-1.0-SNAPSHOT-exec.jar
 
+
 Visit http://localhost:8080/swagger
+
