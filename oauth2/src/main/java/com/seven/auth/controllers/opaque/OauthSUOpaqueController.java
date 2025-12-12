@@ -1,6 +1,5 @@
 package com.seven.auth.controllers.opaque;
 
-import com.seven.auth.OauthService;
 import com.seven.auth.account.AccountDTO;
 import com.seven.auth.dto.jwt.JwtLoginRequest;
 import com.seven.auth.dto.response.Response;
@@ -15,11 +14,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("su/auth/oauth2/opaque")
 public class OauthSUOpaqueController {
-    private final OauthService oauth2Service;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public OauthSUOpaqueController(OauthService oauth2Service) {
-        this.oauth2Service = oauth2Service;
+    public OauthSUOpaqueController() {
     }
 
     @SecurityRequirements

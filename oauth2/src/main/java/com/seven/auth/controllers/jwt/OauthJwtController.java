@@ -1,10 +1,11 @@
 package com.seven.auth.controllers.jwt;
 
-import com.seven.auth.OauthService;
 import com.seven.auth.account.AccountDTO;
 import com.seven.auth.dto.jwt.JwtLoginRequest;
 import com.seven.auth.dto.response.Response;
 import com.seven.auth.exception.AuthorizationException;
+import com.seven.auth.services.jwt.AppleOauth2Service;
+import com.seven.auth.services.jwt.GoogleOauth2Service;
 import com.seven.auth.util.Constants;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -15,17 +16,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.seven.auth.dto.response.Responder.ok;
-
 @RestController
 @RequestMapping("/auth/oauth2/jwt")
 @SecurityRequirements
 public class OauthJwtController {
-    private final OauthService oauth2Service;
+    private final GoogleOauth2Service googleOauth2Service;
+    private final AppleOauth2Service appleOauth2Service;
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public OauthJwtController(OauthService oauth2Service) {
-        this.oauth2Service = oauth2Service;
+    public OauthJwtController(GoogleOauth2Service googleOauth2Service, AppleOauth2Service appleOauth2Service) {
+        this.googleOauth2Service = googleOauth2Service;
+        this.appleOauth2Service = appleOauth2Service;
     }
 
     @PostMapping(value = "/{provider}/register", produces = "application/json", consumes = "application/json")

@@ -1,10 +1,11 @@
 package com.seven.auth.controllers.jwt;
 
-import com.seven.auth.OauthService;
 import com.seven.auth.account.AccountDTO;
 import com.seven.auth.dto.jwt.JwtLoginRequest;
 import com.seven.auth.dto.response.Response;
 import com.seven.auth.exception.AuthorizationException;
+import com.seven.auth.services.jwt.AppleOauth2Service;
+import com.seven.auth.services.jwt.GoogleOauth2Service;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -12,16 +13,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.seven.auth.dto.response.Responder.ok;
-
 @RestController
 @RequestMapping("su/auth/oauth2/jwt")
 public class OauthSUJwtController {
-    private final OauthService oauth2Service;
+    private final GoogleOauth2Service googleOauth2Service;
+    private final AppleOauth2Service appleOauth2Service;
+
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public OauthSUJwtController(OauthService oauth2Service) {
-        this.oauth2Service = oauth2Service;
+    public OauthSUJwtController(GoogleOauth2Service googleOauth2Service, AppleOauth2Service appleOauth2Service) {
+        this.googleOauth2Service = googleOauth2Service;
+        this.appleOauth2Service = appleOauth2Service;
     }
 
     @SecurityRequirements
