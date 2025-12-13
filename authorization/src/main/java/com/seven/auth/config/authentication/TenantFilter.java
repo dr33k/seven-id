@@ -34,14 +34,20 @@ public class TenantFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             log.info("---------------------------------------AUTHORIZATION---------------------------------------------------------------");
-            setTenant(request, (String) request.getAttribute("tenant"));
+            log.info("Auth Variant: {}", TenantContext.getCurrentAuthVariant());
+
+            if(AuthVariant.JWT.equals(TenantContext.getCurrentAuthVariant())){
+                setJwtTenant(request, (String) request.getAttribute("tenant"));
+            } else if (AuthVariant.OAUTH2.equals(TenantContext.getCurrentAuthVariant())) {
+                setOauth2Tenant(request, request.getHeader("X-Tenant-Id"));
+            }
             filterChain.doFilter(request, response);
         } finally {
             TenantContext.clearTenant();
         }
     }
 
-    private void setTenant(HttpServletRequest request, String tenant) {
+    private void setJwtTenant(HttpServletRequest request, String tenant) {
         try {
             String path = request.getRequestURI();
             log.info("PATH: {}", path);
@@ -89,6 +95,47 @@ public class TenantFilter extends OncePerRequestFilter {
             log.info("Routed to tenant: {}", TenantContext.getCurrentTenant());
         } catch (Exception e) {
             String msg = "Error routing to tenant %s : %s".formatted(tenant, e.getMessage());
+            log.error(msg);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, msg);
+        }
+    }
+
+    private void setOauth2Tenant(HttpServletRequest request, String tenantIdString) {
+        try {
+            String path = request.getRequestURI();
+            log.info("PATH: {}", path);
+
+            //Paths not visited by users
+            if (isPathWhitelisted(path)) {
+                log.info("WHITELISTED: {}", path);
+                TenantContext.setCurrentTenant(Constants.PUBLIC_SCHEMA);
+            }
+
+            assert tenantIdString != null : "Tenant not provided";
+            UUID tenantId = UUID.fromString(tenantIdString);
+            String tenant = applicationRepository.findById(tenantId).orElseThrow(() -> new ConflictException("Tenant with id %s not found".formatted(tenantId))).getSchemaName();
+
+            //Authentication paths
+            if (isSuperuserAuthenticationPath(path)) {
+                log.info("Superuser authentication path");
+            } else if (isRegularAuthenticationPath(path)) {
+                log.info("Authentication path");
+            }
+
+            //Requests performed by superusers
+            else if (currentPrincipalIsSuperUser(tenant)) {
+                log.info("Current principal is a superuser");
+            }
+
+            //Requests performed by other users
+            else {
+                log.info("Current principal is a regular user");
+            }
+
+            TenantContext.setCurrentTenant(tenant);
+            log.info("Routed to tenant: {}", TenantContext.getCurrentTenant());
+        } catch (Exception e) {
+            String msg = "Error routing to tenantId %s : %s".formatted(tenantIdString, e.getMessage());
             log.error(msg);
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, msg);
         }

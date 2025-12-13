@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
 import com.seven.auth.JwtService;
 import com.seven.auth.account.AccountDTO;
+import com.seven.auth.config.authentication.AuthVariant;
+import com.seven.auth.config.threadlocal.TenantContext;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -54,6 +56,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                             request.setAttribute("subject", email);
                             request.setAttribute("permissions", permissions);
+
+                            TenantContext.setCurrentAuthVariant(AuthVariant.JWT);
                             request.setAttribute("tenant", tenant);
 
                             UsernamePasswordAuthenticationToken authenticationToken =

@@ -1,6 +1,12 @@
 package com.seven.auth.config;
 
 
+import com.seven.auth.account.Account;
+import com.seven.auth.account.AccountDTO;
+import com.seven.auth.account.AccountRepository;
+import com.seven.auth.config.authentication.AuthVariant;
+import com.seven.auth.config.threadlocal.TenantContext;
+import com.seven.auth.permission.PermissionRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,13 +19,16 @@ import org.springframework.security.authentication.AuthenticationManagerResolver
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtIssuerAuthenticationManagerResolver;
 import org.springframework.security.oauth2.server.resource.authentication.OpaqueTokenAuthenticationProvider;
 import org.springframework.security.oauth2.server.resource.introspection.SpringOpaqueTokenIntrospector;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,6 +38,8 @@ import java.util.stream.Collectors;
 public class OAuthResourceServerConfiguration {
     private final List<String> trustedJwtIssuers;
     private final List<IntrospectionServer> trustedIntrospectionServers;
+    private final AccountRepository accountRepository;
+    private final PermissionRepository permissionRepository;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -51,9 +62,16 @@ public class OAuthResourceServerConfiguration {
                 )
 
                 .oauth2ResourceServer((oauth2) -> oauth2
-                        .authenticationManagerResolver(this.tokenAuthenticationManagerResolver()))
+                        //Validate oauth tokens using JWKS
+                        .authenticationManagerResolver(this.tokenAuthenticationManagerResolver())
+                        //Extract principal properties from token
+                        .jwt((jwt)-> jwt.jwtAuthenticationConverter(this.jwtAuthenticationConverter()))
+                )
 
                 .oauth2Login(Customizer.withDefaults())
+
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         ;
         return http.build();
     }
@@ -67,8 +85,8 @@ public class OAuthResourceServerConfiguration {
 
         return (request) -> {
             String uri = request.getRequestURI();
-            if (uri.startsWith("/auth/oauth2-resource-client-hybrid/jwt")) return jwt.resolve(request);
-            else if (uri.startsWith("/auth/oauth2-resource-client-hybrid/opaque")) return resolveOpaqueToken(request, otMap);
+            if (uri.startsWith("/auth/oauth2/jwt")) return jwt.resolve(request);
+            else if (uri.startsWith("/auth/oauth2/opaque")) return resolveOpaqueToken(request, otMap);
             else throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         };
     }
@@ -100,4 +118,17 @@ public class OAuthResourceServerConfiguration {
         return new BCryptPasswordEncoder(12);
     }
 
+    public JwtAuthenticationConverter jwtAuthenticationConverter(){
+        var jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter((jwt)-> {
+            String email = jwt.getClaimAsString("email");
+            String firstName = jwt.getClaimAsString("given_name");
+            String lastName = jwt.getClaimAsString("family_name");
+            PrincipalContext.setCurrentPrincipal("%s:%s:%s".formatted(email, firstName, lastName));
+
+            TenantContext.setCurrentAuthVariant(AuthVariant.OAUTH2);
+            return List.of();
+        });
+        return jwtAuthenticationConverter;
+    }
 }
