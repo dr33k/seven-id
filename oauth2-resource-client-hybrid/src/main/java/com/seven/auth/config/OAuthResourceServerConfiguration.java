@@ -1,8 +1,6 @@
 package com.seven.auth.config;
 
 
-import com.seven.auth.account.Account;
-import com.seven.auth.account.AccountDTO;
 import com.seven.auth.account.AccountRepository;
 import com.seven.auth.config.authentication.AuthVariant;
 import com.seven.auth.config.threadlocal.TenantContext;
@@ -28,7 +26,6 @@ import org.springframework.security.oauth2.server.resource.introspection.SpringO
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
