@@ -1,6 +1,5 @@
 package com.seven.auth.config.threadlocal;
 
-import com.seven.auth.account.Account;
 import com.seven.auth.config.authentication.AuthVariant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -9,6 +9,7 @@
     </option>
     <option name="ignoredFiles">
       <set>
+        <option value="$PROJECT_DIR$/jwt-auth/pom.xml" />
         <option value="$PROJECT_DIR$/oauth2-client/pom.xml" />
       </set>
     </option>

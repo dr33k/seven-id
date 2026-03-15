@@ -1,0 +1,45 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: 'oauth2-resource'
+  security:
+    oauth2:
+      # DOOR 1 & 2: Configuring the "Social Login" clients
+      client:
+        registration:
+          google:
+            client-id: ${OIDC_GOOGLE_CLIENT_ID:blank}
+            client-secret: ${OIDC_GOOGLE_CLIENT_SECRET:blank}
+            scope: openid, profile, email
+          apple:
+            client-id: ${OIDC_APPLE_CLIENT_ID:blank}
+            client-secret: ${OIDC_APPLE_CLIENT_SECRET:blank}
+            scope: openid, name, email
+        provider:
+          google:
+            issuer-uri: 'https://accounts.google.com'
+          apple:
+            issuer-uri: 'https://appleid.apple.com'
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migrations/default/postgresql
+    schemas: [ public ]
+
+  datasource:
+    username: ${PG_USER:postgres}
+    password: ${PG_PASSWORD:root}
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:${PG_PORT:5432}/auth_db
+    hikari:
+      auto-commit: false
+springdoc:
+  swagger-ui:
+    path: /swagger
+
+app:
+  jwt:
+    secret: ${JWT_SECRET_KEY:weak_jwt_signing_key00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000}
+    issuer: "https://api.seven.com" # This is YOU
+    expiration-hrs: 12
