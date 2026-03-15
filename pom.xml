@@ -17,7 +17,6 @@
     <modules>
         <module>auth-common</module>
         <module>authorization</module>
-        <module>jwt-auth</module>
         <module>oauth2-adapter</module>
         <module>oauth2-resource</module>
     </modules>

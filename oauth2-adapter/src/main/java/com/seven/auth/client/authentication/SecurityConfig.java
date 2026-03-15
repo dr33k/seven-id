@@ -22,12 +22,10 @@ import java.util.Objects;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
+    @Value("authentication.jwt.permitted-paths")
     private List<String> permittedPaths;
-    private Environment env;
-
-    public SecurityConfig(@Value("authentication.jwt.permitted-paths")List<String> permittedPaths) {
-        this.permittedPaths = permittedPaths;
-    }
+    @Value("app.jwt.expiration-hrs")
+    private String appJwtExp;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -47,9 +45,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtDecoder jwtDecoder() {
+    public JwtDecoder jwtDecoder(Environment env) {
         // Assuming you use a HMAC Secret Key (HS256)
-        byte[] secretKeyBytes = Objects.requireNonNull(env.getProperty("app.jwt.expiration-hrs")).getBytes(StandardCharsets.UTF_8);;
+        byte[] secretKeyBytes = appJwtExp.getBytes(StandardCharsets.UTF_8);;
         SecretKey secretKey = new SecretKeySpec(secretKeyBytes, "HmacSHA512");
 
         return NimbusJwtDecoder.withSecretKey(secretKey).build();

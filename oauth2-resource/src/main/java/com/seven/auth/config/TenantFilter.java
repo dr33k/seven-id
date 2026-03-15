@@ -23,7 +23,9 @@ import java.util.UUID;
 public class TenantFilter extends OncePerRequestFilter {
     private final Logger log = LoggerFactory.getLogger(getClass());
     //These URIs do not require a tenant id
-    private final List<String> whitelist = List.of("/swagger", "/swagger-ui", "/v3/api-docs", Constants.PATH_PREFIX + "/applications");
+    private final List<String> whitelist = List.of(
+            "/swagger", "/swagger-ui", "/v3/api-docs", Constants.PATH_PREFIX + "/applications",
+            "/.well-known/appspecific/com.chrome.devtools.json", "/favicon.ico");
     private final ApplicationRepository applicationRepository;
 
     public TenantFilter(ApplicationRepository applicationRepository) {

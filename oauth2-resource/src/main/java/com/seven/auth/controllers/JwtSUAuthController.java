@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.seven.auth.dto.response.Responder.ok;
 
 @RestController
-@RequestMapping("su/auth/jwt")
+@RequestMapping("su/auth")
 public class JwtSUAuthController {
     private final JwtService jwtService;
 

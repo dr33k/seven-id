@@ -18,12 +18,13 @@ import io.jsonwebtoken.jackson.io.JacksonSerializer;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.annotation.ApplicationScope;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -31,23 +32,29 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
-@ApplicationScope
 public class JwtService {
     private static final Logger log = LoggerFactory.getLogger(JwtService.class);
-    private final Environment env;
     final private AccountService accountService;
     final private PermissionRepository permissionRepository;
     private final AuthenticationProvider authenticationProvider;
     private final ObjectMapper objectMapper;
 
-    public JwtService(Environment env, AccountService accountService, PermissionRepository permissionRepository, AuthenticationProvider authenticationProvider, ObjectMapper objectMapper) {
-        this.env = env;
+    @Value("${app.jwt.secret}")
+    private String appJwtSecret;
+    @Value("${app.jwt.expiration-hrs}")
+    private String appJwtExp;
+
+    public JwtService(AccountService accountService, PermissionRepository permissionRepository, BCryptPasswordEncoder bCryptPasswordEncoder, ObjectMapper objectMapper) {
         this.accountService = accountService;
         this.permissionRepository = permissionRepository;
-        this.authenticationProvider = authenticationProvider;
+
+        DaoAuthenticationProvider dao = new DaoAuthenticationProvider(accountService);
+        dao.setUserDetailsPasswordService(accountService);
+        dao.setPasswordEncoder(bCryptPasswordEncoder);
+        this.authenticationProvider = dao;
+
         this.objectMapper = objectMapper;
     }
 
@@ -60,7 +67,7 @@ public class JwtService {
     }
 
     private Key getSigningKey() {
-        byte[] bytes = Objects.requireNonNull(env.getProperty("app.jwt.secret")).getBytes(StandardCharsets.UTF_8);
+        byte[] bytes = appJwtSecret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(bytes);
     }
 
@@ -72,9 +79,7 @@ public class JwtService {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date())
-                .setExpiration(Date.from(now.plusHours(
-                        Integer.parseInt(Objects.requireNonNull(env.getProperty("app.jwt.secret")))).toInstant())
-                )
+                .setExpiration(Date.from(now.plusHours(Integer.parseInt(appJwtExp)).toInstant()))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS512)
                 .compact();
     }

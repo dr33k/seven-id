@@ -23,7 +23,7 @@ public class AuthorizationHandlerInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws AuthorizationException{
         try {
-            List<String> tokenPermissions = Optional.ofNullable((List<String>)request.getAttribute("permissions")).orElse(Collections.EMPTY_LIST);
+            Set<String> tokenPermissions = Optional.ofNullable((Set<String>)request.getAttribute("permissions")).orElse(Collections.EMPTY_SET);
             log.info("User permissions: {}", tokenPermissions);
 
             if (handler instanceof HandlerMethod) {

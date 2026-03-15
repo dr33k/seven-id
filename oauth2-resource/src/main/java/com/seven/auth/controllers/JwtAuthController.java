@@ -21,7 +21,7 @@ import static com.seven.auth.dto.response.Responder.created;
 import static com.seven.auth.dto.response.Responder.ok;
 
 @RestController
-@RequestMapping("/auth/jwt")
+@RequestMapping("/auth")
 @SecurityRequirements
 public class JwtAuthController {
     JwtService jwtService;

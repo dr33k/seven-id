@@ -4,11 +4,13 @@ import com.seven.auth.account.Account;
 import com.seven.auth.account.AccountDTO;
 import com.seven.auth.account.AccountRepository;
 import com.seven.auth.account.AuthProvider;
+import com.seven.auth.application.ApplicationRepository;
 import com.seven.auth.config.threadlocal.TenantContext;
 import com.seven.auth.exception.ConflictException;
 import com.seven.auth.permission.Permission;
 import com.seven.auth.permission.PermissionRepository;
 import com.seven.auth.services.JwtService;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -25,20 +27,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@Component
 public class OAuth2SsoSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtService jwtService;
+    private final ApplicationRepository applicationRepository;
     private final AccountRepository accountRepository;
     private final PermissionRepository permissionRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final EntityManager em;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public OAuth2SsoSuccessHandler(JwtService jwtService, AccountRepository accountRepository, PermissionRepository permissionRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public OAuth2SsoSuccessHandler(JwtService jwtService, ApplicationRepository applicationRepository, AccountRepository accountRepository,
+                                   PermissionRepository permissionRepository, BCryptPasswordEncoder bCryptPasswordEncoder, EntityManager em) {
         this.jwtService = jwtService;
+        this.applicationRepository = applicationRepository;
         this.accountRepository = accountRepository;
         this.permissionRepository = permissionRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.em = em;
     }
 
     @Override
@@ -59,6 +65,20 @@ public class OAuth2SsoSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
                     throw new ConflictException("Account with email %s already exists".formatted(email));
                 });
 
+        //Get tenant from state
+        String state = request.getParameter("state");
+        String tenant;
+        if (state != null && state.contains(":")) {
+            String tenantId = state.split(":")[1];
+            tenant = applicationRepository.findById(UUID.fromString(tenantId)).orElseThrow(() -> new ConflictException("Tenant with id %s not found".formatted(tenantId))).getSchemaName();
+            TenantContext.setCurrentTenant(tenant);
+            log.info("Switching to schema for tenant: {}", tenant);
+        } else {
+            log.error("Tenant id not found in 'state' property of OIDC callback");
+            throw new ConflictException("Tenant id not found in 'state' property of OIDC callback");
+        }
+
+        em.createNativeQuery("SET SCHEMA '%s'".formatted(tenant)).executeUpdate();
         Account a = accountRepository.save(
                 new Account(
                         AuthProvider.valueOf(provider),
@@ -76,15 +96,14 @@ public class OAuth2SsoSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
         Map<String, Object> attributes = oidcUser.getAttributes();
         attributes.put("principal", accountRecord);
         attributes.put("permissions", permissions);
-        attributes.put("tenant", TenantContext.getCurrentTenant());
-
+        attributes.put("tenant", tenant);
 
         // 2. Generate your Custom Bearer Token
         String token = jwtService.generateToken(email, attributes);
 
         // 3. Redirect to your Frontend with the token in a query param
         // (In production, consider a secure cookie or a specialized redirect)
-        String targetUrl = "http://localhost:8080/login-success?token=" + token;
+        String targetUrl = "http://localhost:8082/login-success?token=" + token;
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }

@@ -3,7 +3,7 @@ Schema-per-tenant modular-monolithic authentication solution.
 
 Plug-and-play adapters for microservices. 
 
-Supports self-signed JWTs, OAuth2 OIDC and OAuth2 Opaque Tokens. 
+Supports custom JWTs and OAuth2 OIDC Tokens. 
 
 ## Requirements
 
