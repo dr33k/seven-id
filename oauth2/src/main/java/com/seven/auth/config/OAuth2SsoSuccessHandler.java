@@ -121,8 +121,6 @@ public class OAuth2SsoSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
         });
 
         // 3. Redirect to your Frontend with the token in a query param
-        // (In production, consider a secure cookie or a specialized redirect)
-
         Cookie jwtCookie = new Cookie("X-Seven-Jwt", token);
         jwtCookie.setHttpOnly(true);
         jwtCookie.setSecure(false);

@@ -14,13 +14,17 @@ spring:
             scope: openid, profile, email
           apple:
             client-id: ${OIDC_APPLE_CLIENT_ID:blank}
-            client-secret: ${OIDC_APPLE_CLIENT_SECRET:blank}
-            scope: openid, name, email
+            client-authentication-method: private_key_jwt
+            authorization-grant-type: authorization_code
+            scope: openid,name,email
         provider:
           google:
             issuer-uri: 'https://accounts.google.com'
           apple:
             issuer-uri: 'https://appleid.apple.com'
+            authorization-uri: https://appleid.apple.com/auth/authorize?response_mode=form_post
+            token-uri: https://appleid.apple.com/auth/token
+            jwk-set-uri: https://appleid.apple.com/auth/keys
 
   flyway:
     enabled: true
@@ -41,5 +45,5 @@ springdoc:
 app:
   jwt:
     secret: ${JWT_SECRET_KEY:weak_jwt_signing_key00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000}
-    issuer: "http://localhost:8082" # This is YOU
+    issuer: "http://localhost:8082"
     expiration-hrs: 1
