@@ -10,15 +10,15 @@ import com.seven.auth.util.Constants;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import jakarta.servlet.http.Cookie;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
 
-import static com.seven.auth.dto.response.Responder.created;
-import static com.seven.auth.dto.response.Responder.ok;
+import static com.seven.auth.dto.response.Responder.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -42,5 +42,12 @@ public class JwtAuthController {
     public ResponseEntity<Response> login(@Valid @RequestBody BearerTokenLoginRequest request) throws AuthorizationException {
         AuthDTO userDTO = jwtService.login(request);
         return ok(userDTO.data, userDTO.token);
+    }
+
+    @GetMapping(value = "/oauth2/login-success", produces = "application/json", consumes = "*/*")
+    public ResponseEntity<Response> oauth2LoginSuccess(@CookieValue("X-Seven-Jwt")Cookie cookie) throws AuthorizationException {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(cookie.getName(), cookie.getValue());
+        return new ResponseEntity<>(headers, HttpStatusCode.valueOf(204));
     }
 }

@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -30,6 +31,8 @@ import java.nio.charset.StandardCharsets;
 public class SecurityConfig {
     @Value("${app.jwt.secret}")
     private String appJwtSecret;
+    @Value("${app.jwt.issuer}")
+    private String appJwtIssuer;
 
     private final JwtAuthenticationConverter converter;
     private final JwtService jwtService;
@@ -41,10 +44,11 @@ public class SecurityConfig {
     private final ClientRegistrationRepository clientRegistrationRepository;
     private final ApplicationRepository applicationRepository;
     private final EntityManager entityManager;
+    private final TransactionTemplate transactionTemplate;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public SecurityConfig(JwtAuthenticationConverter converter, JwtService jwtService, BCryptPasswordEncoder bCryptPasswordEncoder, TenantFilter tenantFilter, AccountRepository accountRepository, PermissionRepository permissionRepository, ClaimsExtractionFilter claimsExtractionFilter, ClientRegistrationRepository clientRegistrationRepository, ApplicationRepository applicationRepository, EntityManager entityManager) {
+    public SecurityConfig(JwtAuthenticationConverter converter, JwtService jwtService, BCryptPasswordEncoder bCryptPasswordEncoder, TenantFilter tenantFilter, AccountRepository accountRepository, PermissionRepository permissionRepository, ClaimsExtractionFilter claimsExtractionFilter, ClientRegistrationRepository clientRegistrationRepository, ApplicationRepository applicationRepository, EntityManager entityManager, TransactionTemplate transactionTemplate) {
         this.converter = converter;
         this.jwtService = jwtService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -55,6 +59,7 @@ public class SecurityConfig {
         this.clientRegistrationRepository = clientRegistrationRepository;
         this.applicationRepository = applicationRepository;
         this.entityManager = entityManager;
+        this.transactionTemplate = transactionTemplate;
     }
 
     @Bean
@@ -93,7 +98,7 @@ public class SecurityConfig {
     }
 
     public OAuth2SsoSuccessHandler oAuth2SsoSuccessHandler() {
-        return new OAuth2SsoSuccessHandler(jwtService, applicationRepository, accountRepository, permissionRepository, bCryptPasswordEncoder, entityManager);
+        return new OAuth2SsoSuccessHandler(appJwtIssuer, jwtService, applicationRepository, accountRepository, permissionRepository, bCryptPasswordEncoder, entityManager, transactionTemplate);
     }
 
     @Bean

@@ -2,7 +2,7 @@ server:
   port: 8082
 spring:
   application:
-    name: 'oauth2-resource'
+    name: 'oauth2'
   security:
     oauth2:
       # DOOR 1 & 2: Configuring the "Social Login" clients
@@ -41,5 +41,5 @@ springdoc:
 app:
   jwt:
     secret: ${JWT_SECRET_KEY:weak_jwt_signing_key00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000}
-    issuer: "https://api.seven.com" # This is YOU
-    expiration-hrs: 12
+    issuer: "http://localhost:8082" # This is YOU
+    expiration-hrs: 1

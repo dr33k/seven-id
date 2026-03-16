@@ -35,7 +35,7 @@ public class TenantAwareOAuth2RequestResolver implements OAuth2AuthorizationRequ
     private OAuth2AuthorizationRequest customize(OAuth2AuthorizationRequest authRequest, HttpServletRequest request) {
         if (authRequest == null) return null;
 
-        // 1. Grab the tenantId from a query param (e.g., /oauth2/authorization/google?tenantId=yessah)
+        // 1. Grab the tenantId from a query param (e.g., /oauth2/authorization/google?tenant_id=dreek)
         String tenantId = request.getParameter("tenant_id");
         if (tenantId == null || tenantId.isEmpty()) {
             log.error("No tenantId provided");

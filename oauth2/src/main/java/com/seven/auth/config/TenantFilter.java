@@ -27,7 +27,7 @@ public class TenantFilter extends OncePerRequestFilter {
 
     //These URIs do not require a tenant id
     private final List<String> whitelist = List.of(
-            "/swagger", "/swagger-ui", "/v3/api-docs", Constants.PATH_PREFIX + "/applications",
+            "/swagger", "/swagger-ui", "/v3/api-docs", Constants.PATH_PREFIX + "/applications", "/auth/oauth2/login-success",
             "/.well-known/appspecific/com.chrome.devtools.json", "/favicon.ico");
     private final ApplicationRepository applicationRepository;
 
