@@ -6,9 +6,10 @@ import com.seven.auth.account.AccountDTO;
 import com.seven.auth.account.AccountService;
 import com.seven.auth.account.AuthDTO;
 import com.seven.auth.config.threadlocal.TenantContext;
-import com.seven.auth.dto.jwt.JwtLoginRequest;
+import com.seven.auth.dto.request.BearerTokenLoginRequest;
 import com.seven.auth.exception.AuthorizationException;
 import com.seven.auth.exception.ClientException;
+import com.seven.auth.exception.UnauthorizedException;
 import com.seven.auth.permission.Permission;
 import com.seven.auth.permission.PermissionRepository;
 import io.jsonwebtoken.Claims;
@@ -125,7 +126,7 @@ public class JwtService {
     }
 
     @Transactional
-    public AuthDTO login(JwtLoginRequest request) throws AuthorizationException{
+    public AuthDTO login(BearerTokenLoginRequest request) throws AuthorizationException{
         try {
             String tenant = TenantContext.getCurrentTenant();
             log.info("Login username: {}; tenant: {}", request.getUsername(), tenant);
@@ -144,7 +145,7 @@ public class JwtService {
             return AuthDTO.builder().data(accountRecord).token(token).build();
         } catch (Exception e) {
             log.error("Unable to login {}. Message: ", request.getUsername(), e);
-            throw new ClientException(e.getMessage());
+            throw new UnauthorizedException(e.getMessage());
         }
     }
 }

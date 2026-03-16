@@ -28,6 +28,7 @@ public class ClaimsExtractionFilter extends OncePerRequestFilter {
         if (authentication instanceof AccountAuthenticationToken token) {
             // Case: Resource Server (JWT Bearer Token)
             request.setAttribute("principal", token.getPrincipal());
+            request.setAttribute("tenant", token.getTenant());
             request.setAttribute("permissions", token.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet()));
         }
 

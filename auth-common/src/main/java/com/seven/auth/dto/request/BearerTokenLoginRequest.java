@@ -1,16 +1,16 @@
-package com.seven.auth.dto.jwt;
+package com.seven.auth.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.validation.annotation.Validated;
 
 @Validated
-public class JwtLoginRequest {
+public class BearerTokenLoginRequest {
     @NotBlank
     private String username;
     @NotBlank
     private String password;
 
-    public JwtLoginRequest() {
+    public BearerTokenLoginRequest() {
     }
 
     public @NotBlank String getUsername() {

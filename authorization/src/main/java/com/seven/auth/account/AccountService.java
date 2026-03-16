@@ -128,12 +128,12 @@ public class AccountService implements UserDetailsService, UserDetailsPasswordSe
             Set<String> tenants = applicationRepository.findAll().stream().map(Application::getSchemaName).collect(Collectors.toSet());
             tenants.remove(Constants.PUBLIC_SCHEMA);
 
-            String sqlTemplate = "INSERT INTO \"%s\".auth_account(id, first_name, last_name, email, status,  phone_no, dob, password, is_deleted, date_created, created_by, date_updated, updated_by)" +
-                    "VALUES(:id, :firstName, :lastName, :email, :status, :phoneNo, :dob, :password, :isDeleted, CURRENT_TIMESTAMP, :createdBy, CURRENT_TIMESTAMP, :updatedBy);";
+            String sqlTemplate = "INSERT INTO \"%s\".auth_account(id, first_name, last_name, email, status,  phone_no, auth_provider, dob, password, is_deleted, date_created, created_by, date_updated, updated_by)" +
+                    "VALUES(:id, :firstName, :lastName, :email, :status, :phoneNo, :authProvider, :dob, :password, :isDeleted, CURRENT_TIMESTAMP, :createdBy, CURRENT_TIMESTAMP, :updatedBy);";
             String sql;
             for (String tenant : tenants) {
                 boolean exists = (Boolean) em.createNativeQuery("SELECT EXISTS(SELECT 1 FROM \"%s\".auth_account WHERE email = '%s');".formatted(tenant, accountCreateRequest.email())).getSingleResult();
-                log.info("Already exists in {} : {}; {}", tenant, exists, exists ? "Skipping..." : "Creating...");
+                log.info("Already exists in schema '{}' : {}; {}", tenant, exists, exists ? "Skipping..." : "Creating...");
                 if (!exists) {
                     sql = sqlTemplate.formatted(tenant);
 
@@ -144,6 +144,7 @@ public class AccountService implements UserDetailsService, UserDetailsPasswordSe
                             .setParameter("email", accountRecord.email())
                             .setParameter("status", Account.AccountStatus.INACTIVE.toString())
                             .setParameter("dob", accountRecord.dob())
+                            .setParameter("authProvider", AuthProvider.in_house.toString())
                             .setParameter("phoneNo", accountRecord.phoneNo())
                             .setParameter("password", "_")
                             .setParameter("isDeleted", false)

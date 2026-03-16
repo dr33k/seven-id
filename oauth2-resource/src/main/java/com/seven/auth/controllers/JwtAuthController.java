@@ -2,7 +2,7 @@ package com.seven.auth.controllers;
 
 import com.seven.auth.account.AccountDTO;
 import com.seven.auth.account.AuthDTO;
-import com.seven.auth.dto.jwt.JwtLoginRequest;
+import com.seven.auth.dto.request.BearerTokenLoginRequest;
 import com.seven.auth.dto.response.Response;
 import com.seven.auth.exception.AuthorizationException;
 import com.seven.auth.services.JwtService;
@@ -39,7 +39,7 @@ public class JwtAuthController {
 
     @PostMapping(value = "/login", produces = "application/json", consumes = "application/json")
     @Parameter(name = Constants.TENANT_ID_KEY, in = ParameterIn.HEADER, required = true)
-    public ResponseEntity<Response> login(@Valid @RequestBody JwtLoginRequest request) throws AuthorizationException {
+    public ResponseEntity<Response> login(@Valid @RequestBody BearerTokenLoginRequest request) throws AuthorizationException {
         AuthDTO userDTO = jwtService.login(request);
         return ok(userDTO.data, userDTO.token);
     }

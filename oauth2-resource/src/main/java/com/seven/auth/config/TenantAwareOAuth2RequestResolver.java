@@ -36,7 +36,7 @@ public class TenantAwareOAuth2RequestResolver implements OAuth2AuthorizationRequ
         if (authRequest == null) return null;
 
         // 1. Grab the tenantId from a query param (e.g., /oauth2/authorization/google?tenantId=yessah)
-        String tenantId = request.getHeader("X-Tenant-Id");
+        String tenantId = request.getParameter("tenant_id");
         if (tenantId == null || tenantId.isEmpty()) {
             log.error("No tenantId provided");
             throw new ConflictException("No tenantId provided");

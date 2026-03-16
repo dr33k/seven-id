@@ -8,10 +8,12 @@ import java.util.Collection;
 
 public class AccountAuthenticationToken extends AbstractAuthenticationToken {
     private final AccountDTO.Record principal;
+    private final String tenant;
 
-    public AccountAuthenticationToken(AccountDTO.Record principal, Collection<? extends GrantedAuthority> authorities) {
+    public AccountAuthenticationToken(AccountDTO.Record principal, String tenant, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
+        this.tenant = tenant;
         setAuthenticated(true);
     }
 
@@ -20,4 +22,6 @@ public class AccountAuthenticationToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getPrincipal() { return this.principal; }
+
+    public String getTenant(){return tenant;}
 }

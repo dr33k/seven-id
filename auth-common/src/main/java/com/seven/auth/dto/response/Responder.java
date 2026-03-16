@@ -55,6 +55,14 @@ public final class Responder {
                 .timestamp(LocalDateTime.now())
                 .build());
     }
+    public static ResponseEntity <Response> unauthorized(String message) {
+        return ResponseEntity.status(401).body(Response.builder()
+                .message(message)
+                .isError(true)
+                .status(HttpStatus.UNAUTHORIZED)
+                .timestamp(LocalDateTime.now())
+                .build());
+    }
 
     public static ResponseEntity <Response> conflict(String message) {
         return ResponseEntity.status(409).body(Response.builder()

@@ -24,6 +24,7 @@ public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthen
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {
         // Extract permissions from JWT claims
+        String tenant = jwt.getClaimAsString("tenant");
         List<String> permissions = jwt.getClaimAsStringList("permissions");
         Collection<GrantedAuthority> authorities = permissions.stream()
                 .map(SimpleGrantedAuthority::new)
@@ -32,6 +33,6 @@ public class JwtAuthenticationConverter implements Converter<Jwt, AbstractAuthen
         // Map the principal claim to your Record
         AccountDTO.Record accountRecord = objectMapper.convertValue(jwt.getClaim("principal"), AccountDTO.Record.class);
 
-        return new AccountAuthenticationToken(accountRecord, authorities);
+        return new AccountAuthenticationToken(accountRecord, tenant, authorities);
     }
 }
