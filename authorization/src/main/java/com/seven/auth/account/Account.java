@@ -37,11 +37,15 @@ public class Account implements Serializable, UserDetails {
     @Column(nullable = false)
     private String password;
 
+    @Column(name = "auth_provider", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AuthProvider authProvider = AuthProvider.in_house;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private AccountStatus status = AccountStatus.INACTIVE;
 
-    @Column(nullable = false)
+    @Column
     private LocalDate dob;
 
     @Column(nullable = false)
@@ -65,13 +69,21 @@ public class Account implements Serializable, UserDetails {
     public Account() {
     }
 
-    public Account(String firstName, String lastName, String phoneNo, String email, String password, LocalDate dob) {
+    public Account(String firstName, String lastName, String phoneNo, String email, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNo = phoneNo;
         this.email = email;
         this.password = password;
-        this.dob = dob;
+    }
+
+    public Account(AuthProvider authProvider, String firstName, String lastName, String phoneNo, String email, String password) {
+        this.authProvider = authProvider;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phoneNo = phoneNo;
+        this.email = email;
+        this.password = password;
     }
 
     @Override

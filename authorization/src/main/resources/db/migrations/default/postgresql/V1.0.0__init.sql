@@ -5,13 +5,14 @@ CREATE TABLE auth_account (
         first_name VARCHAR(255) NOT NULL,
         last_name VARCHAR(255)  NOT NULL,
         other_name VARCHAR(255),
-        phone_no VARCHAR(20) NOT NULL,
+        phone_no VARCHAR(20),
         phone_no_alt VARCHAR(20),
         email VARCHAR(255) NOT NULL UNIQUE,
         email_alt VARCHAR(255) UNIQUE,
         status VARCHAR(20) NOT NULL,
         password VARCHAR(512) NOT NULL,
-        dob DATE NOT NULL,
+        dob DATE,
+        auth_provider VARCHAR(15) NOT NULL DEFAULT 'in_house',
         date_created TIMESTAMP WITH TIME ZONE NOT NULL,
         date_updated TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         created_by VARCHAR(255) REFERENCES auth_account(email) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -108,8 +109,8 @@ BEGIN
     super_delete_id = gen_random_uuid();
 
 -- Create Superuser
-INSERT INTO auth_account(id, first_name, last_name, dob, email, phone_no, status, date_created, date_updated, created_by, updated_by, password, is_deleted)
-VALUES (root_account_id, 'super', '', '1950-01-01', root_account_email, '+00000000000', 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, root_account_email, root_account_email, '$2a$12$7BtwA4ZTgyVGM2F7SiCZaeAsM4VD1eP52zrSEdkaP3S60IxCgaXIC', false);
+INSERT INTO auth_account(id, first_name, last_name, email, status, date_created, date_updated, created_by, updated_by, password, is_deleted)
+VALUES (root_account_id, 'super', '', root_account_email, 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, root_account_email, root_account_email, '$2a$12$O9uSXQF7Y5PcVRRdHx9.c.K8Mx2fE7MqUTQcbeXyO6mzBYqmXcdBq', false);
 
 INSERT INTO auth_role(id, name, description, date_created, date_updated, created_by, updated_by)
 VALUES(root_role_id, 'ROOT', 'Superuser administrator role', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, root_account_email, root_account_email);

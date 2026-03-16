@@ -26,6 +26,8 @@ public class AuthorizationExceptionHandler {
             return badRequest(ex.getMessage());
         } else if (exClass.equals(NotFoundException.class)) {
             return notFound(ex.getMessage());
+        } else if (exClass.equals(UnauthorizedException.class)) {
+            return unauthorized(ex.getMessage());
         } else if (exClass.equals(ForbiddenException.class)) {
             return forbidden(ex.getMessage());
         } else if (exClass.equals(ConflictException.class)) {
