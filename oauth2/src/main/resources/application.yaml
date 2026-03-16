@@ -16,7 +16,7 @@ spring:
             client-id: ${OIDC_APPLE_CLIENT_ID:blank}
             client-authentication-method: private_key_jwt
             authorization-grant-type: authorization_code
-            scope: openid,name,email
+            scope: openid, name, email
         provider:
           google:
             issuer-uri: 'https://accounts.google.com'
