@@ -7,6 +7,10 @@ Supports Google and Apple OIDC
 
 Each tenant corresponds to an application/solution in a microservice ecosystem that requires user management
 
+Provision a new tenant using the API (/api/applications) and the credentials for an elevated user will be 
+
+created in the user.home directory of the OS
+
 Plug-and-play adapters for microservices. 
 
 
