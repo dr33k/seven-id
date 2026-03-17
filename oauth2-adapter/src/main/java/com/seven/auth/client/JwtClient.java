@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.UUID;
 
-@FeignClient(name = "jwt-client", url = "${authentication.jwt.base-url}/auth/jwt")
+@FeignClient(name = "jwt-client", url = "${auth.base-url}/auth")
 public interface JwtClient {
 
     @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
