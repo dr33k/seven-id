@@ -21,7 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.io.IOException;
@@ -39,11 +38,11 @@ public class OAuth2SsoSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final EntityManager em;
     private final TransactionTemplate transactionTemplate;
-    private final String hostname;
+    private final String baseUrl;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public OAuth2SsoSuccessHandler(String hostname, JwtService jwtService, ApplicationRepository applicationRepository, AccountRepository accountRepository,
+    public OAuth2SsoSuccessHandler(String baseUrl, JwtService jwtService, ApplicationRepository applicationRepository, AccountRepository accountRepository,
                                    PermissionRepository permissionRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
                                    EntityManager em, TransactionTemplate transactionTemplate) {
         this.jwtService = jwtService;
@@ -53,11 +52,10 @@ public class OAuth2SsoSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.em = em;
         this.transactionTemplate = transactionTemplate;
-        this.hostname = hostname;
+        this.baseUrl = baseUrl;
     }
 
     @Override
-    @Transactional
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication) throws IOException {
@@ -128,7 +126,7 @@ public class OAuth2SsoSuccessHandler extends SimpleUrlAuthenticationSuccessHandl
         jwtCookie.setMaxAge(3600);
         response.addCookie(jwtCookie);
 
-        String targetUrl = "%s/auth/oauth2/login-success".formatted(hostname);
+        String targetUrl = "/auth/oauth2/login-success";
         log.info("Redirecting to /auth/oauth2/login-success with a jwt-cookie");
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);

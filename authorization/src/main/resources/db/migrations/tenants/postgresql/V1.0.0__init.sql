@@ -81,20 +81,30 @@ DECLARE
     admin_account_email VARCHAR(255);
     admin_role_id UUID;
     global_domain_id UUID;
+    authorization_domain_id UUID;
     elev_create_id UUID;
     elev_update_id UUID;
     elev_read_id UUID;
     elev_delete_id UUID;
+    elev_create_auth_id UUID;
+    elev_update_auth_id UUID;
+    elev_read_auth_id UUID;
+    elev_delete_auth_id UUID;
 BEGIN
     admin_account_id := gen_random_uuid();
     root_account_email := 'root@seven.com';
     admin_account_email := current_schema||'@seven.com';
     admin_role_id := gen_random_uuid();
     global_domain_id := gen_random_uuid();
+    authorization_domain_id := gen_random_uuid(); -- Represents the 'authorization' domain in the public schema
     elev_create_id = gen_random_uuid();
     elev_update_id = gen_random_uuid();
     elev_read_id = gen_random_uuid();
     elev_delete_id = gen_random_uuid();
+    elev_create_auth_id = gen_random_uuid();
+    elev_update_auth_id = gen_random_uuid();
+    elev_read_auth_id = gen_random_uuid();
+    elev_delete_auth_id = gen_random_uuid();
 
 -- Create an elevated user and a root user alias
 INSERT INTO auth_account(id, first_name, last_name, email, status, date_created, date_updated, created_by, updated_by, password, is_deleted)
@@ -109,22 +119,35 @@ INSERT INTO auth_assignment(account_email, role_id, date_created, date_updated, 
 VALUES(admin_account_email, admin_role_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email);
 
 INSERT INTO auth_domain(id, name, description, date_created, date_updated, created_by, updated_by)
-VALUES(global_domain_id, current_schema, 'This is an umbrella domain for all the future domains in the '||current_schema||' schema', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email);
+VALUES
+(global_domain_id, current_schema, 'This is an umbrella domain for all the future domains in the '||current_schema||' schema', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
+(authorization_domain_id, 'authorization', 'Represents the ''authorization'' domain in the public schema', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email)
+;
 
 INSERT INTO auth_permission(id, name, description, type, domain_id, date_created, date_updated, created_by, updated_by)
 VALUES
 (elev_create_id, 'elev_create_'||current_schema, 'This represents the CREATE permission that overrides all others for the '||current_schema||' domain', 'CREATE', global_domain_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
 (elev_read_id, 'elev_read_'||current_schema, 'This represents the READ permission that overrides all others for the '||current_schema||' domain', 'READ', global_domain_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
 (elev_update_id, 'elev_update_'||current_schema, 'This represents the UPDATE permission that overrides all others for the '||current_schema||' domain', 'UPDATE', global_domain_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
-(elev_delete_id, 'elev_delete_'||current_schema, 'This represents the DELETE permission that overrides all others for the '||current_schema||' domain', 'DELETE', global_domain_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email)
+(elev_delete_id, 'elev_delete_'||current_schema, 'This represents the DELETE permission that overrides all others for the '||current_schema||' domain', 'DELETE', global_domain_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
+-- Elevated permissions for the 'authorization' domain in the public schema
+(elev_create_auth_id, 'elev_create_authorization', 'This represents the elevated CREATE permission for the ''authorization'' domain', 'CREATE', authorization_domain_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
+(elev_read_auth_id, 'elev_read_authorization', 'This represents the elevated READ permission for the ''authorization'' domain', 'READ', authorization_domain_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
+(elev_update_auth_id, 'elev_update_authorization', 'This represents the elevated UPDATE permission for the ''authorization'' domain', 'UPDATE', authorization_domain_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
+(elev_delete_auth_id, 'elev_delete_authorization', 'This represents the elevated DELETE permission for the ''authorization'' domain', 'DELETE', authorization_domain_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email)
 ;
 
 INSERT INTO auth_grant(id, role_id, permission_id, description, date_created, date_updated, created_by, updated_by)
 VALUES
-(gen_random_uuid(), admin_role_id, elev_create_id, 'Grants the elev_create role to the admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
-(gen_random_uuid(), admin_role_id, elev_update_id, 'Grants the elev_update role to the admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
-(gen_random_uuid(), admin_role_id, elev_read_id, 'Grants the elev_read role to the admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
-(gen_random_uuid(), admin_role_id, elev_delete_id, 'Grants the elev_delete role to the admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email)
+(gen_random_uuid(), admin_role_id, elev_create_id, 'Grants the elev_create permission to the admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
+(gen_random_uuid(), admin_role_id, elev_update_id, 'Grants the elev_update permission to the admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
+(gen_random_uuid(), admin_role_id, elev_read_id, 'Grants the elev_read permission to the admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
+(gen_random_uuid(), admin_role_id, elev_delete_id, 'Grants the elev_delete permission to the admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
+-- Grants for the elevated permissions for the 'authorization' domain in the public schema
+(gen_random_uuid(), admin_role_id, elev_create_auth_id, 'Grants the elev_create_authorization permission to the admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
+(gen_random_uuid(), admin_role_id, elev_update_auth_id, 'Grants the elev_update_authorization permission to the admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
+(gen_random_uuid(), admin_role_id, elev_read_auth_id, 'Grants the elev_read_authorization permission to the admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email),
+(gen_random_uuid(), admin_role_id, elev_delete_auth_id, 'Grants the elev_delete_authorization permission to the admin', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email)
 ;
 END
 $$;

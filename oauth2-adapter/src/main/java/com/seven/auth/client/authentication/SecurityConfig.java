@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,10 +23,10 @@ import java.util.Objects;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-    @Value("authentication.jwt.permitted-paths")
+    @Value("auth.permitted-paths")
     private List<String> permittedPaths;
-    @Value("app.jwt.expiration-hrs")
-    private String appJwtExp;
+    @Value("app.jwt.secret")
+    private String appJwtSecret;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -46,11 +47,10 @@ public class SecurityConfig {
 
     @Bean
     public JwtDecoder jwtDecoder(Environment env) {
-        // Assuming you use a HMAC Secret Key (HS256)
-        byte[] secretKeyBytes = appJwtExp.getBytes(StandardCharsets.UTF_8);;
+        byte[] secretKeyBytes = appJwtSecret.getBytes(StandardCharsets.UTF_8);;
         SecretKey secretKey = new SecretKeySpec(secretKeyBytes, "HmacSHA512");
 
-        return NimbusJwtDecoder.withSecretKey(secretKey).build();
+        return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS512).build();
     }
 
 
