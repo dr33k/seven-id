@@ -30,7 +30,7 @@ public class AssignmentController {
 
     @GetMapping
     @Parameter(name = Constants.TENANT_ID_KEY, in = ParameterIn.HEADER)
-    @Authorize(permissions = {PEnum.read_assignment, PEnum.super_read})
+    @Authorize(permissions = {PEnum.read_assignment, PEnum.super_read, PEnum.elev_read_authorization})
     public ResponseEntity <Response> getResources(@ParameterObject Pagination pagination, @ParameterObject AssignmentDTO.Filter assignmentFilter)  throws AuthorizationException {
         Page<AssignmentDTO.Record> assignmentRecords = assignmentService.getAll(pagination, assignmentFilter);
         return ok(assignmentRecords);
@@ -38,7 +38,7 @@ public class AssignmentController {
 
     @PostMapping
     @Parameter(name = Constants.TENANT_ID_KEY, in = ParameterIn.HEADER)
-    @Authorize(permissions = {PEnum.create_assignment, PEnum.super_create})
+    @Authorize(permissions = {PEnum.create_assignment, PEnum.super_create, PEnum.elev_create_authorization})
     public ResponseEntity <Response> createResource(@Valid @RequestBody AssignmentDTO.Create request) throws AuthorizationException {
         AssignmentDTO.Record assignmentRecord = assignmentService.create(request);
         return ok(assignmentRecord);
@@ -46,7 +46,7 @@ public class AssignmentController {
 
     @DeleteMapping("{assignmentId}")
     @Parameter(name = Constants.TENANT_ID_KEY, in = ParameterIn.HEADER)
-    @Authorize(permissions = {PEnum.delete_assignment, PEnum.super_delete})
+    @Authorize(permissions = {PEnum.delete_assignment, PEnum.super_delete, PEnum.elev_delete_authorization})
     public ResponseEntity <Response> deleteResource(@Valid @NotNull @PathVariable(value = "assignmentId") UUID id) throws AuthorizationException {
         assignmentService.delete(id);
         return noContent();
