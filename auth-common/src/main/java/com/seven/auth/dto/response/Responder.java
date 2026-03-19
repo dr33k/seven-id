@@ -2,7 +2,6 @@ package com.seven.auth.dto.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -82,8 +81,7 @@ public final class Responder {
     }
 
     public static ResponseEntity<Response> created(Object records, String token, String location) {
-        URI uri = ServletUriComponentsBuilder.fromUri(URI.create(location)).buildAndExpand().toUri();
-        return ResponseEntity.status(201).location(uri).body(
+        return ResponseEntity.status(201).location(URI.create(location)).body(
                 Response.builder()
                 .data(records)
                 .token(token)

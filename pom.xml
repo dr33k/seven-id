@@ -29,7 +29,20 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jjwt-version>0.11.0</jjwt-version>
         <revision>1.0-SNAPSHOT</revision>
+        <spring.boot.version>3.5.7</spring.boot.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
         <plugins>
             <plugin>

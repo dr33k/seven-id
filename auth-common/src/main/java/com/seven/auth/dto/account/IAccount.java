@@ -1,6 +1,5 @@
 package com.seven.auth.dto.account;
 
-import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
