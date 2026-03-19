@@ -39,3 +39,19 @@ build/
 
 
 **.flattened-pom.xml
+
+###Vaadin Client
+client/target/
+client/.idea/
+client/.vscode/
+client/.settings
+client/.project
+client/.classpath
+
+client/*.iml
+client/.DS_Store
+
+# The following files are generated/updated by vaadin-maven-plugin
+client/node_modules/
+client/src/main/frontend/generated/
+client/vite.generated.ts
