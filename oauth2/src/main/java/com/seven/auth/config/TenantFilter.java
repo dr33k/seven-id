@@ -93,7 +93,7 @@ public class TenantFilter extends OncePerRequestFilter {
             if (isRegularAuthRequest(path)) {
                 log.info("* Regular Authentication request *");
                 TenantContext.setCurrentTenant(destinationTenant);
-            } else if (isRequestFromSuperuser(path)) {
+            } else if (isRequestFromSuperuser(accountTenant)) {
                 log.info("* Superuser request *");
                 TenantContext.setCurrentTenant(destinationTenant);
             }

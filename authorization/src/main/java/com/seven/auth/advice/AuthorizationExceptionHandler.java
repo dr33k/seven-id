@@ -1,15 +1,13 @@
 package com.seven.auth.advice;
 
 import com.seven.auth.exception.*;
-import com.seven.auth.dto.response.Response;
-import org.springframework.http.HttpStatus;
+import com.seven.auth.dto.response.Res;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
@@ -20,7 +18,7 @@ import static com.seven.auth.dto.response.Responder.*;
 @ControllerAdvice
 public class AuthorizationExceptionHandler {
     @ExceptionHandler(AuthorizationException.class)
-    protected ResponseEntity <Response> handleAuthorizationException(AuthorizationException ex) {
+    protected ResponseEntity <Res> handleAuthorizationException(AuthorizationException ex) {
         Class<? extends AuthorizationException> exClass = ex.getClass();
         if (exClass.equals(ClientException.class)) {
             return badRequest(ex.getMessage());
@@ -37,7 +35,7 @@ public class AuthorizationExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Response> handleValidationExceptions(MethodArgumentNotValidException e){
+    public ResponseEntity<Res> handleValidationExceptions(MethodArgumentNotValidException e){
         Map<String, String> errors = new HashMap<>();
 
         e.getBindingResult().getAllErrors().forEach(error -> {
@@ -58,12 +56,12 @@ public class AuthorizationExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Response> handleHttpMessageNotReadableException(HttpMessageNotReadableException e){
+    public ResponseEntity<Res> handleHttpMessageNotReadableException(HttpMessageNotReadableException e){
         return badRequest(e.getMessage());
     }
 
     @ExceptionHandler(ResponseStatusException.class)
-    public ResponseEntity<Response> handleHttpMessageNotReadableException(ResponseStatusException e){
+    public ResponseEntity<Res> handleHttpMessageNotReadableException(ResponseStatusException e){
         return forbidden(e.getMessage());
     }
 }

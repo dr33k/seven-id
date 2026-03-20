@@ -5,7 +5,7 @@ import com.seven.auth.permission.PEnum;
 import com.seven.auth.util.Constants;
 import com.seven.auth.util.Pagination;
 import com.seven.auth.exception.AuthorizationException;
-import com.seven.auth.dto.response.Response;
+import com.seven.auth.dto.response.Res;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ public class GrantController {
     @GetMapping("{grantId}")
     @Parameter(name = Constants.TENANT_ID_KEY, in = ParameterIn.HEADER)
     @Authorize(permissions = {PEnum.read_grant, PEnum.super_read, PEnum.elev_read_authorization})
-    public ResponseEntity <Response> getResource(@Valid @NotNull @PathVariable(value = "grantId") UUID id)  throws AuthorizationException {
+    public ResponseEntity <Res> getResource(@Valid @NotNull @PathVariable(value = "grantId") UUID id)  throws AuthorizationException {
         GrantDTO.Record grantRecord = grantService.get(id);
         return ok(grantRecord);
     }
@@ -39,7 +39,7 @@ public class GrantController {
     @GetMapping
     @Parameter(name = Constants.TENANT_ID_KEY, in = ParameterIn.HEADER)
     @Authorize(permissions = {PEnum.read_grant, PEnum.super_read, PEnum.elev_read_authorization})
-    public ResponseEntity <Response> getResources(@ParameterObject Pagination pagination,  @ParameterObject GrantDTO.Filter grantFilter)  throws AuthorizationException {
+    public ResponseEntity <Res> getResources(@ParameterObject Pagination pagination, @ParameterObject GrantDTO.Filter grantFilter)  throws AuthorizationException {
         Page<GrantDTO.Record> grantRecords = grantService.getAll(pagination, grantFilter);
         return ok(grantRecords);
     }
@@ -47,7 +47,7 @@ public class GrantController {
     @PostMapping
     @Parameter(name = Constants.TENANT_ID_KEY, in = ParameterIn.HEADER)
     @Authorize(permissions = {PEnum.create_grant, PEnum.super_create, PEnum.elev_create_authorization})
-    public ResponseEntity <Response> createResource(@Valid @RequestBody GrantDTO.Create request) throws AuthorizationException {
+    public ResponseEntity <Res> createResource(@Valid @RequestBody GrantDTO.Create request) throws AuthorizationException {
         GrantDTO.Record grantRecord = grantService.create(request);
         return ok(grantRecord);
     }
@@ -62,7 +62,7 @@ public class GrantController {
     @DeleteMapping("{grantId}")
     @Parameter(name = Constants.TENANT_ID_KEY, in = ParameterIn.HEADER)
     @Authorize(permissions = {PEnum.delete_grant, PEnum.super_delete, PEnum.elev_delete_authorization})
-    public ResponseEntity <Response> deleteResource(@Valid @NotNull @PathVariable(value = "grantId") UUID id) throws AuthorizationException {
+    public ResponseEntity <Res> deleteResource(@Valid @NotNull @PathVariable(value = "grantId") UUID id) throws AuthorizationException {
         grantService.delete(id);
         return noContent();
     }

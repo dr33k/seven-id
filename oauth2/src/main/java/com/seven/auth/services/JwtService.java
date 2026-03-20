@@ -27,10 +27,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +45,8 @@ public class JwtService {
     private final AuthenticationProvider authenticationProvider;
     private final ObjectMapper objectMapper;
 
+    @Value("${app.jwt.issuer}")
+    private String appJwtIssuer;
     @Value("${app.jwt.secret}")
     private String appJwtSecret;
     @Value("${app.jwt.expiration-hrs}")
@@ -60,11 +65,11 @@ public class JwtService {
     }
 
     public Claims extractClaims(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getSigningKey())
+        return Jwts.parser()
+                .decryptWith((SecretKey) getSigningKey())
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     private Key getSigningKey() {
@@ -73,15 +78,28 @@ public class JwtService {
     }
 
     public String generateToken(String subject, Map<String, Object> claims) {
-        ZonedDateTime now = ZonedDateTime.now();
-        return Jwts
-                .builder()
-                .serializeToJsonWith(new JacksonSerializer <>(objectMapper))
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date())
-                .setExpiration(Date.from(now.plusHours(Integer.parseInt(appJwtExp)).toInstant()))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS512)
+        // 1. Create a clean copy
+        Map<String, Object> sanitizedClaims = new HashMap<>(claims);
+
+        // 2. REMOVE standard claims that Google provides but JJWT wants to handle itself
+        // If these stay in the map, JJWT will try to validate their types and fail.
+        sanitizedClaims.remove("exp");
+        sanitizedClaims.remove("iat");
+        sanitizedClaims.remove("iss");
+        sanitizedClaims.remove("sub");
+        sanitizedClaims.remove("at_hash"); // Google specific, usually not needed in your app token
+
+        Instant now = Instant.now();
+        Instant expiry = now.plusSeconds(Long.parseLong(appJwtExp) * 3600);
+
+        return Jwts.builder()
+                .json(new io.jsonwebtoken.jackson.io.JacksonSerializer<>(objectMapper))
+                .claims(sanitizedClaims) // Now it only contains custom data (email, name, etc.)
+                .subject(subject)        // JJWT sets 'sub' correctly here
+                .issuer(appJwtIssuer)    // JJWT sets 'iss' correctly here
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(expiry))
+                .signWith(getSigningKey())
                 .compact();
     }
 
@@ -126,7 +144,7 @@ public class JwtService {
     }
 
     @Transactional
-    public AuthDTO login(BearerTokenLoginRequest request) throws AuthorizationException{
+    public AuthDTO login(BearerTokenLoginRequest request) throws AuthorizationException {
         try {
             String tenant = TenantContext.getCurrentTenant();
             log.info("Login username: {}; tenant: {}", request.getUsername(), tenant);

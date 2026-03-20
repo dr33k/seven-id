@@ -1,5 +1,10 @@
 server:
   port: 8082
+app:
+  jwt:
+    secret: ${JWT_SECRET_KEY:weak_jwt_signing_key00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000}
+    issuer: "http://localhost:8082"
+    expiration-hrs: 1
 spring:
   application:
     name: 'oauth2'
@@ -12,19 +17,26 @@ spring:
             client-id: ${OIDC_GOOGLE_CLIENT_ID:blank}
             client-secret: ${OIDC_GOOGLE_CLIENT_SECRET:blank}
             scope: openid, profile, email
+#            redirect-uri: "${app.jwt.issuer}/login/oauth2/code/google"
           apple:
             client-id: ${OIDC_APPLE_CLIENT_ID:blank}
             client-authentication-method: private_key_jwt
             authorization-grant-type: authorization_code
             scope: openid, name, email
+#            redirect-uri: "${app.jwt.issuer}/login/oauth2/code/apple"
         provider:
           google:
             issuer-uri: 'https://accounts.google.com'
+#            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+#            token-uri: https://oauth2.googleapis.com/token
+#            jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+#            user-info-authentication-method: post
           apple:
             issuer-uri: 'https://appleid.apple.com'
-            authorization-uri: https://appleid.apple.com/auth/authorize?response_mode=form_post
-            token-uri: https://appleid.apple.com/auth/token
-            jwk-set-uri: https://appleid.apple.com/auth/keys
+#            authorization-uri: https://appleid.apple.com/auth/authorize
+#            token-uri: https://appleid.apple.com/auth/token
+#            jwk-set-uri: https://appleid.apple.com/auth/keys
+#            user-info-authentication-method: post
 
   flyway:
     enabled: true
@@ -41,9 +53,3 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger
-
-app:
-  jwt:
-    secret: ${JWT_SECRET_KEY:weak_jwt_signing_key00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000}
-    issuer: "http://localhost:8082"
-    expiration-hrs: 1

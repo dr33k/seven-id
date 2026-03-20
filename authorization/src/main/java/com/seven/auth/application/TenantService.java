@@ -1,7 +1,6 @@
 package com.seven.auth.application;
 
 import com.seven.auth.account.Account;
-import com.seven.auth.account.AccountDTO;
 import com.seven.auth.account.AccountRepository;
 import com.seven.auth.config.threadlocal.TenantContext;
 import com.seven.auth.domain.Domain;
@@ -15,10 +14,11 @@ import org.flywaydb.core.api.Location;
 import org.flywaydb.core.api.configuration.ClassicConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.auditing.AuditingHandler;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -45,17 +45,17 @@ public class TenantService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final DataSource dataSource;
     private final EntityManager em;
-    private final AuditingHandler auditingHandler;
+    private final TransactionTemplate transactionTemplate;
 
     public TenantService(ApplicationRepository applicationRepository, AccountRepository accountRepository, DomainRepository domainRepository, BCryptPasswordEncoder bCryptPasswordEncoder,
-                         DataSource dataSource, EntityManager em, AuditingHandler auditingHandler) {
+                         DataSource dataSource, EntityManager em, TransactionTemplate transactionTemplate) {
         this.applicationRepository = applicationRepository;
         this.accountRepository = accountRepository;
         this.domainRepository = domainRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.dataSource = dataSource;
         this.em = em;
-        this.auditingHandler = auditingHandler;
+        this.transactionTemplate = transactionTemplate;
     }
 
     @Transactional
@@ -90,12 +90,21 @@ public class TenantService {
             //Create flyway instance for schema-to-be-created
             Flyway tenantFlyway = buildTenantFlyway(dataSource, appRequest);
 
-            //Clean up any incompletely provisioned schemas with the same name from the db
-            tenantFlyway.clean();
+            transactionTemplate.execute(status -> {
+                try {
+                    //Clean up any incompletely provisioned schemas with the same name from the db
+                    tenantFlyway.clean();
 
-            //Create and migrate new schema
-            tenantFlyway.migrate();
-            log.info("Schema: {} created successfully in DB", appRequest.schemaName());
+                    //Create and migrate new schema
+                    tenantFlyway.migrate();
+                    log.info("Schema: {} created successfully in DB", appRequest.schemaName());
+
+                    return true;
+                } catch (Exception e) {
+                    status.setRollbackOnly();
+                    throw e;
+                }
+            });
 
             //Switch to newly created schema
             em.createNativeQuery("SET SCHEMA '%s'".formatted(appRequest.schemaName())).executeUpdate();
@@ -163,7 +172,7 @@ public class TenantService {
      * @param app
      * @throws IOException
      */
-    public void  dropSchema(Application app) {
+    public void dropSchema(Application app) {
         try {
             log.info("Dropping schema: {} in DB", app.getName());
 

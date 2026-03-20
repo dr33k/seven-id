@@ -5,7 +5,7 @@ import com.seven.auth.permission.PEnum;
 import com.seven.auth.util.Constants;
 import com.seven.auth.util.Pagination;
 import com.seven.auth.exception.AuthorizationException;
-import com.seven.auth.dto.response.Response;
+import com.seven.auth.dto.response.Res;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ public class DomainController {
     @GetMapping("{domainId}")
     @Parameter(name = Constants.TENANT_ID_KEY, in = ParameterIn.HEADER)
     @Authorize(permissions = {PEnum.read_domain, PEnum.super_read, PEnum.elev_read_authorization})
-    public ResponseEntity <Response> getResource(@Valid @NotNull @PathVariable(value = "domainId") UUID id)  throws AuthorizationException {
+    public ResponseEntity <Res> getResource(@Valid @NotNull @PathVariable(value = "domainId") UUID id)  throws AuthorizationException {
         DomainDTO.Record domainRecord = domainService.get(id);
         return ok(domainRecord);
     }
@@ -39,7 +39,7 @@ public class DomainController {
     @GetMapping
     @Parameter(name = Constants.TENANT_ID_KEY, in = ParameterIn.HEADER)
     @Authorize(permissions = {PEnum.read_domain, PEnum.super_read, PEnum.elev_read_authorization})
-    public ResponseEntity <Response> getResources(@ParameterObject Pagination pagination,  @ParameterObject DomainDTO.Filter domainFilter)  throws AuthorizationException {
+    public ResponseEntity <Res> getResources(@ParameterObject Pagination pagination, @ParameterObject DomainDTO.Filter domainFilter)  throws AuthorizationException {
         Page<DomainDTO.Record> domainRecords = domainService.getAll(pagination, domainFilter);
         return ok(domainRecords);
     }
@@ -47,7 +47,7 @@ public class DomainController {
     @PostMapping
     @Parameter(name = Constants.TENANT_ID_KEY, in = ParameterIn.HEADER)
     @Authorize(permissions = {PEnum.create_domain, PEnum.super_create, PEnum.elev_create_authorization})
-    public ResponseEntity <Response> createResource(@Valid @RequestBody DomainDTO.Create request) throws AuthorizationException {
+    public ResponseEntity <Res> createResource(@Valid @RequestBody DomainDTO.Create request) throws AuthorizationException {
         DomainDTO.Record domainRecord = domainService.create(request);
         return ok(domainRecord);
     }
@@ -62,7 +62,7 @@ public class DomainController {
     @DeleteMapping("{domainId}")
     @Parameter(name = Constants.TENANT_ID_KEY, in = ParameterIn.HEADER)
     @Authorize(permissions = {PEnum.delete_domain, PEnum.super_delete, PEnum.elev_delete_authorization})
-    public ResponseEntity <Response> deleteResource(@Valid @NotNull @PathVariable(value = "domainId") UUID id) throws AuthorizationException {
+    public ResponseEntity <Res> deleteResource(@Valid @NotNull @PathVariable(value = "domainId") UUID id) throws AuthorizationException {
         domainService.delete(id);
         return noContent();
     }

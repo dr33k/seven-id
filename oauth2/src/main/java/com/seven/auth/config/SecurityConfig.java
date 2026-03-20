@@ -65,17 +65,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(2)
+    @Order(1)
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+
+                .securityMatcher("/api/**", "/auth/**", "/su/auth/**", "/login/**","/oauth2/**", "/v3/api-docs/**", "/swagger","/swagger-ui/**", "/.well-known/**")
 
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
                         authorizationManagerRequestMatcherRegistry
                                 .requestMatchers("/auth/**", "/su/auth/**").permitAll() // Whitelist local login and signup
                                 .requestMatchers("/login/**", "/oauth2/**").permitAll() // Whitelist OIDC paths
-                                .requestMatchers("/swagger", "/swagger-ui/**", "/v3/api-docs/**",
-                                "/.well-known/appspecific/com.chrome.devtools.json", "/favicon.ico").permitAll()
+                                .requestMatchers("/swagger", "/swagger-ui/**", "/v3/api-docs/**", "/.well-known/**").permitAll()
                                 .anyRequest().authenticated()
                 )
 
@@ -96,7 +97,7 @@ public class SecurityConfig {
 
 
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED));
         return http.build();
     }
 

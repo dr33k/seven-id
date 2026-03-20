@@ -5,7 +5,7 @@ import com.seven.auth.permission.PEnum;
 import com.seven.auth.util.Constants;
 import com.seven.auth.util.Pagination;
 import com.seven.auth.exception.AuthorizationException;
-import com.seven.auth.dto.response.Response;
+import com.seven.auth.dto.response.Res;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springdoc.core.annotations.ParameterObject;
@@ -28,28 +28,28 @@ public class ApplicationController {
 
     @GetMapping("/{applicationId}")
     @Authorize(permissions = PEnum.super_read)
-    public ResponseEntity <Response> getResource(@Valid @NotNull @PathVariable(value = "applicationId") UUID id)  throws AuthorizationException {
+    public ResponseEntity <Res> getResource(@Valid @NotNull @PathVariable(value = "applicationId") UUID id)  throws AuthorizationException {
         ApplicationDTO.Record record = applicationService.get(id);
         return ok(record);
     }
 
     @GetMapping
     @Authorize(permissions = PEnum.super_read)
-    public ResponseEntity <Response> getResources(@ParameterObject Pagination pagination, @ParameterObject ApplicationDTO.Filter applicationFilter)  throws AuthorizationException {
+    public ResponseEntity <Res> getResources(@ParameterObject Pagination pagination, @ParameterObject ApplicationDTO.Filter applicationFilter)  throws AuthorizationException {
         Page<ApplicationDTO.Record> applicationDTOs = applicationService.getAll(pagination, applicationFilter);
         return ok(applicationDTOs);
     }
 
     @PostMapping
     @Authorize(permissions = PEnum.super_create)
-    public ResponseEntity <Response> createResource(@Valid @RequestBody ApplicationDTO.Create create) throws AuthorizationException {
+    public ResponseEntity <Res> createResource(@Valid @RequestBody ApplicationDTO.Create create) throws AuthorizationException {
         ApplicationDTO.Record record = applicationService.create(create);
         return ok(record);
     }
     
     @DeleteMapping("{applicationId}")
     @Authorize(permissions = PEnum.super_delete)
-    public ResponseEntity <Response> deleteResource(@Valid @NotNull @PathVariable(value = "applicationId") UUID id) throws AuthorizationException {
+    public ResponseEntity <Res> deleteResource(@Valid @NotNull @PathVariable(value = "applicationId") UUID id) throws AuthorizationException {
         applicationService.delete(id);
         return noContent();
     }

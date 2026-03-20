@@ -7,16 +7,16 @@ import java.net.URI;
 import java.time.LocalDateTime;
 
 public final class Responder {
-    public static ResponseEntity <Response> ok(Object records) {
-        return ResponseEntity.ok(Response.builder()
+    public static ResponseEntity <Res> ok(Object records) {
+        return ResponseEntity.ok(Res.builder()
                 .data(records)
                 .isError(false)
                 .status(HttpStatus.OK)
                 .timestamp(LocalDateTime.now())
                 .build());
     }
-    public static ResponseEntity <Response> ok(Object records, String token) {
-        return ResponseEntity.ok(Response.builder()
+    public static ResponseEntity <Res> ok(Object records, String token) {
+        return ResponseEntity.ok(Res.builder()
                 .token(token)
                 .data(records)
                 .isError(false)
@@ -25,16 +25,16 @@ public final class Responder {
                 .build());
     }
 
-    public static ResponseEntity <Response> badRequest(String message) {
-        return ResponseEntity.status(400).body(Response.builder()
+    public static ResponseEntity <Res> badRequest(String message) {
+        return ResponseEntity.status(400).body(Res.builder()
                 .message(message)
                 .isError(true)
                 .status(HttpStatus.BAD_REQUEST)
                 .timestamp(LocalDateTime.now())
                 .build());
     }
-    public static ResponseEntity <Response> badRequest(Object data) {
-        return ResponseEntity.status(400).body(Response.builder()
+    public static ResponseEntity <Res> badRequest(Object data) {
+        return ResponseEntity.status(400).body(Res.builder()
                 .data(data)
                 .isError(true)
                 .status(HttpStatus.BAD_REQUEST)
@@ -42,20 +42,20 @@ public final class Responder {
                 .build());
     }
 
-    public static ResponseEntity <Response> notFound(String message) {
+    public static ResponseEntity <Res> notFound(String message) {
         return ResponseEntity.notFound().build();
     }
-    public static ResponseEntity <Response> noContent() {return ResponseEntity.noContent().build();}
-    public static ResponseEntity <Response> forbidden(String message) {
-        return ResponseEntity.status(403).body(Response.builder()
+    public static ResponseEntity <Res> noContent() {return ResponseEntity.noContent().build();}
+    public static ResponseEntity <Res> forbidden(String message) {
+        return ResponseEntity.status(403).body(Res.builder()
                 .message(message)
                 .isError(true)
                 .status(HttpStatus.FORBIDDEN)
                 .timestamp(LocalDateTime.now())
                 .build());
     }
-    public static ResponseEntity <Response> unauthorized(String message) {
-        return ResponseEntity.status(401).body(Response.builder()
+    public static ResponseEntity <Res> unauthorized(String message) {
+        return ResponseEntity.status(401).body(Res.builder()
                 .message(message)
                 .isError(true)
                 .status(HttpStatus.UNAUTHORIZED)
@@ -63,16 +63,16 @@ public final class Responder {
                 .build());
     }
 
-    public static ResponseEntity <Response> conflict(String message) {
-        return ResponseEntity.status(409).body(Response.builder()
+    public static ResponseEntity <Res> conflict(String message) {
+        return ResponseEntity.status(409).body(Res.builder()
                 .message(message)
                 .isError(true)
                 .status(HttpStatus.CONFLICT)
                 .timestamp(LocalDateTime.now())
                 .build());
     }
-    public static ResponseEntity <Response> internalServerError(String message) {
-        return ResponseEntity.internalServerError().body(Response.builder()
+    public static ResponseEntity <Res> internalServerError(String message) {
+        return ResponseEntity.internalServerError().body(Res.builder()
                 .message(message)
                 .isError(true)
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -80,9 +80,9 @@ public final class Responder {
                 .build());
     }
 
-    public static ResponseEntity<Response> created(Object records, String token, String location) {
+    public static ResponseEntity<Res> created(Object records, String token, String location) {
         return ResponseEntity.status(201).location(URI.create(location)).body(
-                Response.builder()
+                Res.builder()
                 .data(records)
                 .token(token)
                 .isError(false)
