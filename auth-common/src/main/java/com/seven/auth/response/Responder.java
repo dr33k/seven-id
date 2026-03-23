@@ -1,4 +1,4 @@
-package com.seven.auth.dto.response;
+package com.seven.auth.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

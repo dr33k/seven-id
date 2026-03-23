@@ -46,12 +46,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtDecoder jwtDecoder(Environment env) {
-        byte[] secretKeyBytes = appJwtSecret.getBytes(StandardCharsets.UTF_8);;
+    public JwtDecoder jwtDecoder() {
+        // Assuming you use a HMAC Secret Key (HS512)
+        byte[] secretKeyBytes = appJwtSecret.getBytes(StandardCharsets.UTF_8);
         SecretKey secretKey = new SecretKeySpec(secretKeyBytes, "HmacSHA512");
 
-        return NimbusJwtDecoder.withSecretKey(secretKey).macAlgorithm(MacAlgorithm.HS512).build();
+        return NimbusJwtDecoder
+                .withSecretKey(secretKey)
+                .macAlgorithm(MacAlgorithm.HS512)
+                .build();
     }
-
 
 }

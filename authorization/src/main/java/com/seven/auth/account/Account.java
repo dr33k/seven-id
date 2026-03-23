@@ -17,7 +17,7 @@ import java.util.*;
 @Table(name="auth_account")
 @Data
 @ToString
-public class Account implements Serializable, UserDetails {
+public class Account implements IAccountEntity, Serializable, UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

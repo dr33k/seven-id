@@ -1,8 +1,8 @@
 package com.seven.auth.client;
 
-import com.seven.auth.dto.account.IAccount;
-import com.seven.auth.dto.request.BearerTokenLoginRequest;
-import com.seven.auth.dto.response.Res;
+import com.seven.auth.account.AccountDTO;
+import com.seven.auth.request.BearerTokenLoginRequest;
+import com.seven.auth.response.Res;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,10 +15,10 @@ import java.util.UUID;
 public interface JwtClient {
 
     @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    Res<IAccount.Record> register(@RequestHeader(value = "X-Tenant-Id") UUID tenantId,
-                                  @RequestBody IAccount.Request request);
+    Res<AccountDTO.Record> register(@RequestHeader(value = "X-Tenant-Id") UUID tenantId,
+                                    @RequestBody AccountDTO.Create request);
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    Res<IAccount> login(@RequestHeader(value = "X-Tenant-Id") UUID tenantId,
+    Res<AccountDTO> login(@RequestHeader(value = "X-Tenant-Id") UUID tenantId,
                         @RequestBody BearerTokenLoginRequest request);
 }

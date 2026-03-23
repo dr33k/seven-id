@@ -17,8 +17,8 @@
     <modules>
         <module>auth-common</module>
         <module>authorization</module>
-        <module>oauth2-adapter</module>
         <module>oauth2</module>
+        <module>oauth2-adapter</module>
         <module>client</module>
     </modules>
 

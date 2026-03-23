@@ -1,7 +1,7 @@
 package com.seven.auth.advice;
 
 import com.seven.auth.exception.*;
-import com.seven.auth.dto.response.Res;
+import com.seven.auth.response.Res;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.seven.auth.dto.response.Responder.*;
+import static com.seven.auth.response.Responder.*;
 
 @ControllerAdvice
 public class AuthorizationExceptionHandler {

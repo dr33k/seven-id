@@ -2,8 +2,8 @@ package com.seven.auth.controllers;
 
 import com.seven.auth.account.AccountDTO;
 import com.seven.auth.account.AuthDTO;
-import com.seven.auth.dto.request.BearerTokenLoginRequest;
-import com.seven.auth.dto.response.Res;
+import com.seven.auth.request.BearerTokenLoginRequest;
+import com.seven.auth.response.Res;
 import com.seven.auth.exception.AuthorizationException;
 import com.seven.auth.services.JwtService;
 import com.seven.auth.util.Constants;
@@ -17,7 +17,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.seven.auth.dto.response.Responder.*;
+import static com.seven.auth.response.Responder.created;
+import static com.seven.auth.response.Responder.ok;
 
 @RestController
 @RequestMapping("/auth")

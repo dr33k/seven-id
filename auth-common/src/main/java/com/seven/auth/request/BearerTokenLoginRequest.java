@@ -1,4 +1,4 @@
-package com.seven.auth.dto.request;
+package com.seven.auth.request;
 
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.validation.annotation.Validated;

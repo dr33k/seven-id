@@ -1,4 +1,4 @@
-package com.seven.auth.dto.response;
+package com.seven.auth.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

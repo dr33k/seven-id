@@ -2,8 +2,8 @@ package com.seven.auth.controllers;
 
 import com.seven.auth.account.AccountDTO;
 import com.seven.auth.account.AuthDTO;
-import com.seven.auth.dto.request.BearerTokenLoginRequest;
-import com.seven.auth.dto.response.Res;
+import com.seven.auth.request.BearerTokenLoginRequest;
+import com.seven.auth.response.Res;
 import com.seven.auth.exception.AuthorizationException;
 import com.seven.auth.services.JwtService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.seven.auth.dto.response.Responder.ok;
+import static com.seven.auth.response.Responder.ok;
 
 @RestController
 @RequestMapping("su/auth")
