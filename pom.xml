@@ -16,9 +16,12 @@
     <packaging>pom</packaging>
     <modules>
         <module>auth-common</module>
+        <module>servlet-auth</module>
+        <module>reactive-auth</module>
         <module>authorization</module>
         <module>oauth2</module>
-        <module>oauth2-adapter</module>
+        <module>oauth2-servlet-adapter</module>
+        <module>oauth2-reactive-adapter</module>
         <module>client</module>
     </modules>
 

@@ -14,8 +14,12 @@
 <dependencies>
     <dependency>
         <groupId>com.seven.auth</groupId>
-        <artifactId>auth-common</artifactId>
+        <artifactId>servlet-auth</artifactId>
         <version>${revision}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
     <dependency>
         <groupId>org.postgresql</groupId>
