@@ -10,7 +10,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.seven</groupId>
+    <groupId>com.seven.auth</groupId>
     <artifactId>seven-id</artifactId>
     <version>${revision}</version>
     <packaging>pom</packaging>
