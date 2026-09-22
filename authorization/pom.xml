@@ -20,7 +20,7 @@
 
 <dependencies>
     <dependency>
-        <groupId>com.seven</groupId>
+        <groupId>com.seven.auth</groupId>
         <artifactId>auth-common</artifactId>
         <version>${revision}</version>
     </dependency>
