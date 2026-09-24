@@ -22,7 +22,7 @@
         <module>oauth2</module>
         <module>oauth2-servlet-adapter</module>
         <module>oauth2-reactive-adapter</module>
-        <module>client</module>
+<!--        <module>client</module>-->
     </modules>
 
     <properties>
