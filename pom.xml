@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.7</version>
+        <version>3.5.11</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -16,19 +16,36 @@
     <packaging>pom</packaging>
     <modules>
         <module>auth-common</module>
+        <module>servlet-auth</module>
+        <module>reactive-auth</module>
         <module>authorization</module>
-        <module>oauth2-adapter</module>
         <module>oauth2</module>
+        <module>oauth2-servlet-adapter</module>
+        <module>oauth2-reactive-adapter</module>
+<!--        <module>client</module>-->
     </modules>
 
     <properties>
-        <java.version>21</java.version>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <java.version>25</java.version>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <jjwt-version>0.11.0</jjwt-version>
+        <jjwt-version>0.12.6</jjwt-version>
         <revision>1.0-SNAPSHOT</revision>
+        <spring.boot.version>3.5.11</spring.boot.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <build>
         <plugins>
             <plugin>
