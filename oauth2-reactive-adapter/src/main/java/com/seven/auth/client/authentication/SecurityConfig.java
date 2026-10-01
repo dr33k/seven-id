@@ -3,7 +3,6 @@ package com.seven.auth.client.authentication;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,15 +16,14 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Objects;
 
 
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-    @Value("auth.permitted-paths")
+    @Value("app.auth.permitted-paths")
     private List<String> permittedPaths;
-    @Value("app.jwt.secret")
+    @Value("app.auth.jwt.secret")
     private String appJwtSecret;
 
     @Bean

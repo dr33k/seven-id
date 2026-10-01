@@ -14,7 +14,7 @@ public class AuthorizationHandlerInterceptorConfiguration implements WebMvcConfi
 
     private final List<String> permittedPaths;
 
-    public AuthorizationHandlerInterceptorConfiguration(@Value("authorization.jwt.permitted-paths")List<String> permittedPaths, AuthorizationHandlerInterceptor authorizationHandlerInterceptor) {
+    public AuthorizationHandlerInterceptorConfiguration(@Value("app.auth.permitted-paths")List<String> permittedPaths, AuthorizationHandlerInterceptor authorizationHandlerInterceptor) {
         permittedPaths.addAll(List.of("/swagger/**", "/swagger-ui/**", "/v3/api-docs/**"));
         this.permittedPaths = permittedPaths;
         this.authorizationHandlerInterceptor = authorizationHandlerInterceptor;

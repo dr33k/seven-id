@@ -23,9 +23,9 @@ import java.util.Objects;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-    @Value("auth.permitted-paths")
+    @Value("app.auth.permitted-paths")
     private List<String> permittedPaths;
-    @Value("app.jwt.secret")
+    @Value("app.auth.jwt.secret")
     private String appJwtSecret;
 
     @Bean
