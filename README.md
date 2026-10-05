@@ -5,6 +5,8 @@ Supports self-signed JWT and OAuth2 OIDC Authentication.
 
 Supports Google and Apple OIDC
 
+Uses a public facing REST API
+
 Each tenant corresponds to an application/solution in a microservice ecosystem that requires user management
 
 Provision a new tenant using the API (/api/applications) and the credentials for an elevated user will be 
