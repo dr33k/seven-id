@@ -31,7 +31,7 @@ services:
     networks:
       - app-net
     environment:
-      DATASOURCE_URL: jdbc:postgresql://postgres:5431/auth_db
+      DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_db
 
 networks:
   app-net:
