@@ -29,6 +29,11 @@ Required DB name: auth_db
 ## Run application
 
 ### DOCKER IMAGE
+
+Build project
+
+    sudo mvn clean install
+    
 Build image
     
     sudo mvn clean package com.google.cloud.tools:jib-maven-plugin:dockerBuild -pl oauth2
