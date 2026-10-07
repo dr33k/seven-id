@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
     ports:
-      - "5432:5432"
+      - "5431:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -31,7 +31,7 @@ services:
     networks:
       - app-net
     environment:
-      DATASOURCE_URL: jdbc:postgresql://postgres:5432/auth_db
+      DATASOURCE_URL: jdbc:postgresql://postgres:5431/auth_db
 
 networks:
   app-net:

@@ -13,6 +13,7 @@
         <option value="$PROJECT_DIR$/jwt-auth/pom.xml" />
         <option value="$PROJECT_DIR$/oauth2-client/pom.xml" />
         <option value="$PROJECT_DIR$/reactive-auth-common/pom.xml" />
+        <option value="$PROJECT_DIR$/reactive-auth/pom.xml" />
       </set>
     </option>
   </component>

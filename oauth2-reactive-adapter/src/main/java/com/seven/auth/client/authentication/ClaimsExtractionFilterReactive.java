@@ -1,5 +1,6 @@
-package com.seven.auth.config;
+package com.seven.auth.client.authentication;
 
+import com.seven.auth.config.AccountAuthenticationToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

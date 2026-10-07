@@ -17,7 +17,6 @@
     <modules>
         <module>auth-common</module>
         <module>servlet-auth</module>
-        <module>reactive-auth</module>
         <module>authorization</module>
         <module>oauth2</module>
         <module>oauth2-servlet-adapter</module>
