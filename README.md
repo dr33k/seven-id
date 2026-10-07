@@ -18,11 +18,11 @@ Plug-and-play adapters for microservices.
 
 ## Requirements
 
-Java version: 21
+Java version: 25
 
-Maven version: 3.9.6
+Maven version: 3.9.6 +
 
-Postgres version: 14+
+Postgres version: 14 +
 
 Required DB name: auth_db
 
