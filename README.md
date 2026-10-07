@@ -18,35 +18,48 @@ Plug-and-play adapters for microservices.
 
 ## Requirements
 
-Java version: 21
+Java version: 25
 
-Maven version: 3.9.6
+Maven version: 3.9.6 +
 
-Postgres version: 14+
+Postgres version: 14 +
 
 Required DB name: auth_db
 
-Env:
+## Run application
+
+### DOCKER IMAGE
+Build image
+    
+    $ sudo mvn clean package com.google.cloud.tools:jib-maven-plugin:dockerBuild -pl oauth2
+
+Run image
+    
+    $ sudo docker-compose up
+
+### OR MANUALLY
+
+Using Env (defaults are already configured):
 
     PG_USER, PG_PASSWORD, PG_PORT, JWT_SECRET_KEY
     OIDC_GOOGLE_CLIENT_ID, OIDC_GOOGLE_CLIENT_SECRET,
     OIDC_APPLE_CLIENT_ID
 
+Make sure to have postgres 14+ server running.
 
-## Run application
+Then in project root folder:
 
-In project root folder
-
-    $ mvn clean install
-    $ mvn -pl oauth2 spring-boot:run
+    $ sudo mvn clean install
+    $ sudo mvn -pl oauth2 spring-boot:run
 
 OR for truly native pseudo-random number generation by BCryptPasswordEncoder on Linux machines
     
-    $ mvn clean install
-    $ java -Djava.security.egd=file:///dev/random -jar jwt-auth/target/oauth2-1.0-SNAPSHOT-exec.jar
+    $ sudo mvn clean install
+    $ sudo java -Djava.security.egd=file:///dev/random -jar jwt-auth/target/oauth2-1.0-SNAPSHOT-exec.jar
 
 
-Visit http://localhost:8080/swagger
+
+## Visit http://localhost:8082/swagger
 
 
 ## Todo

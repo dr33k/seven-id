@@ -79,6 +79,29 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.4.3</version>
+                <configuration>
+                    <from>
+                        <!-- Java 21/25 compatible eclipse-temurin base image -->
+                        <image>eclipse-temurin:25-jdk-alpine</image>
+                    </from>
+                    <to>
+                        <!-- Target image name and tag -->
+                        <image>seven-id-oauth2:latest</image>
+                    </to>
+                    <container>
+                        <ports>
+                            <port>8082</port>
+                        </ports>
+                        <environment>
+                            <SPRING_PROFILES_ACTIVE>dev</SPRING_PROFILES_ACTIVE>
+                        </environment>
+                    </container>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

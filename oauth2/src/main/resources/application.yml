@@ -47,7 +47,7 @@ spring:
     username: ${PG_USER:postgres}
     password: ${PG_PASSWORD:root}
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:${PG_PORT:5432}/auth_db
+    url: ${DATASOURCE_URL:jdbc:postgresql://localhost:${PG_PORT:5432}/auth_db}
     hikari:
       auto-commit: false
 springdoc:
