@@ -1,5 +1,6 @@
 package com.seven.auth.client.authentication;
 
+import com.seven.auth.config.JwtAuthenticationConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,18 +33,32 @@ public class SecurityConfig {
     @Value("app.auth.jwt.secret")
     private String appJwtSecret;
 
+    private final JwtAuthenticationConverter jwtAuthenticationConverter;
+
+    public SecurityConfig(JwtAuthenticationConverter jwtAuthenticationConverter) {
+        this.jwtAuthenticationConverter = jwtAuthenticationConverter;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        String[] paths = permittedPaths.toArray(new String[]{});
+
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
-                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
-                        authorizationManagerRequestMatcherRegistry
-                                .requestMatchers(permittedPaths.toArray(new String[]{})).permitAll()
-                                .requestMatchers("/swagger", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                                .anyRequest().authenticated()
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(
+                        jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)
+                        )
+                )
+                .authorizeHttpRequests(requests -> {
+                    if (paths.length > 0) {
+                        requests.requestMatchers(paths).permitAll();
+                    }
+                            requests
+                                    .requestMatchers("/swagger", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                                    .anyRequest().authenticated();
+                        }
                 )
 
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

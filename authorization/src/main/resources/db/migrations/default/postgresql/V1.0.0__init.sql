@@ -110,7 +110,7 @@ BEGIN
 
 -- Create Superuser
 INSERT INTO auth_account(id, first_name, last_name, email, status, date_created, date_updated, created_by, updated_by, password, is_deleted)
-VALUES (root_account_id, 'super', '', root_account_email, 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, root_account_email, root_account_email, '$2a$12$O9uSXQF7Y5PcVRRdHx9.c.K8Mx2fE7MqUTQcbeXyO6mzBYqmXcdBq', false);
+VALUES (root_account_id, 'super', '', root_account_email, 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, root_account_email, root_account_email, '$2a$12$.d.NpulxyTBV0BhhIXjfaeJWvunKj4js52HgmN1VWUS7ZMcOHHE7q', false);
 
 INSERT INTO auth_role(id, name, description, date_created, date_updated, created_by, updated_by)
 VALUES(root_role_id, 'ROOT', 'Superuser administrator role', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, root_account_email, root_account_email);
