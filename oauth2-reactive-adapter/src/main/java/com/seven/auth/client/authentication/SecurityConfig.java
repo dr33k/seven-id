@@ -1,11 +1,12 @@
 package com.seven.auth.client.authentication;
 
 import com.seven.auth.client.authorization.AuthorizationFilter;
+import com.seven.auth.config.JwtAuthenticationConverter;
+import com.seven.auth.config.ReactiveJwtAuthenticationConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -29,9 +30,11 @@ public class SecurityConfig {
     private String appJwtSecret;
 
     private final AuthorizationFilter authorizationFilter;
+    private final ReactiveJwtAuthenticationConverter reactiveJwtAuthenticationConverter;
 
-    public SecurityConfig(AuthorizationFilter authorizationFilter) {
+    public SecurityConfig(AuthorizationFilter authorizationFilter, ReactiveJwtAuthenticationConverter reactiveJwtAuthenticationConverter) {
         this.authorizationFilter = authorizationFilter;
+        this.reactiveJwtAuthenticationConverter = reactiveJwtAuthenticationConverter;
     }
 
     @Bean
@@ -42,7 +45,10 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable)
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(
+                        jwt -> jwt.jwtAuthenticationConverter(reactiveJwtAuthenticationConverter)
+                        )
+                )
                 .addFilterAt(authorizationFilter, SecurityWebFiltersOrder.AUTHORIZATION)
 
                 .authorizeExchange(exchanges -> {

@@ -110,7 +110,7 @@ BEGIN
 INSERT INTO auth_account(id, first_name, last_name, email, status, date_created, date_updated, created_by, updated_by, password, is_deleted)
 VALUES
 ((SELECT id FROM public.auth_account WHERE email = root_account_email), 'super', '', root_account_email, 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, root_account_email, root_account_email, '_', false),
-(admin_account_id, 'admin', '', admin_account_email, 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email, '$2a$12$7BtwA4ZTgyVGM2F7SiCZaeAsM4VD1eP52zrSEdkaP3S60IxCgaXIC', false);
+(admin_account_id, 'admin', '', admin_account_email, 'ACTIVE', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email, '$2a$12$.d.NpulxyTBV0BhhIXjfaeJWvunKj4js52HgmN1VWUS7ZMcOHHE7q', false);
 
 INSERT INTO auth_role(id, name, description, date_created, date_updated, created_by, updated_by)
 VALUES(admin_role_id, 'ADMIN', 'Administrator role', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, admin_account_email, admin_account_email);
