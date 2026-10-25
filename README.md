@@ -40,29 +40,8 @@ Build image
 
 Run image
     
-    sudo docker-compose up
-
-### OR MANUALLY
-
-Using Env (defaults are already configured):
-
-    PG_USER, PG_PASSWORD, PG_PORT, JWT_SECRET_KEY
-    OIDC_GOOGLE_CLIENT_ID, OIDC_GOOGLE_CLIENT_SECRET,
-    OIDC_APPLE_CLIENT_ID
-
-Make sure to have postgres 14+ server running.
-
-Then in project root folder:
-
-    sudo mvn clean install
-    sudo mvn -pl oauth2 spring-boot:run
-
-OR for truly native pseudo-random number generation by BCryptPasswordEncoder on Linux machines
+    sudo docker-compose up -d
     
-    sudo mvn clean install
-    sudo java -Djava.security.egd=file:///dev/random -jar jwt-auth/target/oauth2-1.0-SNAPSHOT-exec.jar
-
-
 
 ## Visit http://localhost:8082/swagger
 
