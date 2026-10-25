@@ -24,7 +24,6 @@ Maven version: 3.9.6 +
 
 Postgres version: 14 +
 
-Required DB name: auth_db
 
 ## Run application
 
